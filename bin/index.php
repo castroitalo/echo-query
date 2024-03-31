@@ -13,10 +13,17 @@ use CastroItalo\EchoQuery\Builder;
 function main(): void
 {
     $echo_query = new Builder();
-    $query = $echo_query->select(
+    $sub_query = $echo_query->select(
         ['column_one', 'co'],
-        ['column_two']
+        ['column_two', 'ct']
     )
+        ->from('table_one')
+        ->__toString();
+    $query = $echo_query->select(
+        ['a.column_one', 'co'],
+        ['a.column_two']
+    )
+    ->from($sub_query, 'a', true)
     ->__toString();
 
     echo $query . PHP_EOL;
