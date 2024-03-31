@@ -1,0 +1,31 @@
+# Top-most EditorConfig file
+root = true
+
+# Unix-style newlines with a newline ending every file
+[*]
+end_of_line = lf
+insert_final_newline = true
+charset = utf-8
+
+# 4 space indentation
+[*.{php,phpt,php.dist}]
+indent_style = space
+indent_size = 4
+
+# 2 space indentation for JSON and YAML files
+[*.{json,yml}]
+indent_style = space
+indent_size = 2
+
+# Markdown files (1 space indentation)
+[*.md]
+indent_style = space
+indent_size = 1
+
+# Max line length
+[*.php]
+max_line_length = 120
+
+# Trim trailing whitespace
+[*]
+trim_trailing_whitespace = true

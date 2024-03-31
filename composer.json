@@ -1,0 +1,21 @@
+{
+    "name": "castroitalo/echoquery",
+    "description": "Echo Query facilitates the writing of SQL queries inside the PHP code",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "CastroItalo\\EchoQuery\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "castroitalo",
+            "email": "dev.castro.italo@gmail.com",
+            "role": "developer",
+            "homepage": "https://github.com/castroitalo"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {}
+}
