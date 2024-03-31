@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-use CastroItalo\EchoQuery\Builder;
+require_once __DIR__ . '/../vendor/autoload.php';
 
-require_once __DIR__ . "/../vendor/autoload.php";
+use CastroItalo\EchoQuery\Builder;
 
 /**
  * Main function
@@ -13,7 +13,13 @@ require_once __DIR__ . "/../vendor/autoload.php";
 function main(): void
 {
     $echo_query = new Builder();
-    echo 'hello world';
+    $query = $echo_query->select(
+        ['column_one', 'co'],
+        ['column_two']
+    )
+    ->__toString();
+
+    echo $query . PHP_EOL;
 }
 
 main();
