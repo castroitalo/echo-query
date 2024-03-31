@@ -1,21 +1,31 @@
 {
-    "name": "castroitalo/echoquery",
-    "description": "Echo Query facilitates the writing of SQL queries inside the PHP code",
-    "type": "library",
-    "license": "MIT",
-    "autoload": {
-        "psr-4": {
-            "CastroItalo\\EchoQuery\\": "src/"
-        }
-    },
-    "authors": [
-        {
-            "name": "castroitalo",
-            "email": "dev.castro.italo@gmail.com",
-            "role": "developer",
-            "homepage": "https://github.com/castroitalo"
-        }
-    ],
-    "minimum-stability": "stable",
-    "require": {}
+  "name": "castroitalo/echoquery",
+  "description": "Echo Query facilitates the writing of SQL queries inside the PHP code",
+  "type": "library",
+  "license": "MIT",
+  "autoload": {
+    "psr-4": {
+      "CastroItalo\\EchoQuery\\": "src/"
+    }
+  },
+  "authors": [
+    {
+      "name": "castroitalo",
+      "email": "dev.castro.italo@gmail.com",
+      "role": "developer",
+      "homepage": "https://github.com/castroitalo"
+    }
+  ],
+  "minimum-stability": "stable",
+  "require": {
+    "php": "^8.2"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^10.5",
+    "mockery/mockery": "^1.6"
+  },
+  "scripts": {
+    "echo_query": "php bin/index.php",
+    "fix": "php-cs-fixer fix"
+  }
 }

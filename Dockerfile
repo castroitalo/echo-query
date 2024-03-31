@@ -27,6 +27,10 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 RUN apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
+# Install php-cs-fixer
+RUN composer global require friendsofphp/php-cs-fixer
+ENV PATH="${PATH}:/root/.composer/vendor/bin"
+
 # Set the working directory to your library's directory
 WORKDIR /library
 
