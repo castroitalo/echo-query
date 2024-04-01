@@ -118,19 +118,7 @@ trait BuilderFrom
      */
     public function baseSubQueryFrom(string $query, string $subQuery, ?string $subQueryAlias): string
     {
-        // Validate FROM statement
-        $this->baseFromStatementValidation($query, $subQuery);
-
-        // Validate table alias
-        if (is_null($subQueryAlias) || empty($subQueryAlias)) {
-            throw new BuilderException(
-                'Sub query FROM statement must have a valid alias',
-                $this->invalidAlias,
-            );
-        }
-
-        $this->from = ' FROM ( ' . $subQuery . ' ) AS ' . $subQueryAlias;
-        $query .= $this->from;
+        // TODO
 
         return $query;
     }

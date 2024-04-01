@@ -28,6 +28,7 @@
     "echo_query": "php bin/index.php",
     "fix": "php-cs-fixer fix",
     "tests": "vendor/bin/phpunit --testsuit unit --colors --testdox tests",
-    "builder_select_tests": "vendor/bin/phpunit --testsuit unit --colors --testdox tests/Traits/BuilderSelectTest.php"
+    "builder_select_tests": "vendor/bin/phpunit --testsuit unit --colors --testdox tests/Traits/BuilderSelectTest.php",
+    "builder_from_tests": "vendor/bin/phpunit --testsuit unit --colors --testdox tests/Traits/BuilderFromTest.php"
   }
 }
