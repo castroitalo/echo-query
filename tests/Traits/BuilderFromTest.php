@@ -58,7 +58,7 @@ final class BuilderFromTest extends TestCase
     {
         $actual = $this->builder->select(
             ['column_one', 'co'],
-            ['column_two', 'ct']
+            ['column_two', 'ct'],
         )
             ->from('table_one')
             ->__toString();
@@ -66,7 +66,7 @@ final class BuilderFromTest extends TestCase
 
         $this->assertEquals(
             str_replace(' ', '', $expect),
-            str_replace(' ', '', $actual)
+            str_replace(' ', '', $actual),
         );
     }
 
@@ -84,7 +84,7 @@ final class BuilderFromTest extends TestCase
     {
         $actual = $this->builder->select(
             ['column_one', 'co'],
-            ['column_two', 'ct']
+            ['column_two', 'ct'],
         )
             ->from('table_one', 'to')
             ->__toString();
@@ -92,7 +92,7 @@ final class BuilderFromTest extends TestCase
 
         $this->assertEquals(
             str_replace(' ', '', $expect),
-            str_replace(' ', '', $actual)
+            str_replace(' ', '', $actual),
         );
     }
 }

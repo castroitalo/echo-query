@@ -17,7 +17,7 @@ final class Builder
     use BuilderSelect;
     use BuilderFrom;
 
-    private string $query = "";
+    private string $query = '';
 
     public function select(array ...$columns): self
     {
