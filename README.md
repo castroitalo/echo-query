@@ -48,3 +48,7 @@ $query = $echo_query->select(
     ->equalsTo(5)
     ->__toString();
 ```
+
+## Contributing
+
+To contribute to the project make sure you have read [CONTRIBUTING](https://github.com/castroitalo/echo-query/blob/main/CONTRIBUTING.md) section.

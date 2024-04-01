@@ -1,6 +1,7 @@
 # Contributing to EchoQuery
 
 First off, thank you for considering contributing to EchoQuery. It's people like you that make EchoQuery such a great tool.
+Before contributing make sure you have read [CODE_OF_CONDUCT](https://github.com/castroitalo/echo-query/blob/main/CODE_OF_CONDUCT.md)
 
 ## Development environment
 
