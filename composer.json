@@ -1,6 +1,6 @@
 {
   "name": "castroitalo/echoquery",
-  "description": "Echo Query facilitates the writing of SQL queries inside the PHP code",
+  "description": "EchoQuery facilitates the writing of SQL queries inside the PHP code",
   "type": "library",
   "license": "MIT",
   "autoload": {
