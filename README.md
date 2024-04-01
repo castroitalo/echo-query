@@ -3,7 +3,7 @@
 > **Status: In Development**
 > This library is currently in the development stage and may undergo significant changes. Feedback and contributions are welcome!
 
-EchoQuery revolutionizes PHP-based SQL query generation, offering a streamlined, intuitive interface for developers. It simplifies complex SQL scripting, enhances readability, and accelerates development, making database interactions effortless and efficient for projects of any scale.
+EchoQuery offers a streamlined, intuitive interface for developers. It simplifies complex SQL scripting, enhances readability, and accelerates development, making database interactions effortless and efficient for projects of any scale.
 
 ## Usage
 
