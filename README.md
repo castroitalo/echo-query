@@ -1,5 +1,7 @@
 # EchoQuery
 
+[![Software License][ico-license]](LICENSE.md)
+
 > **Status: In Development**
 > This library is currently in the development stage and may undergo significant changes. Feedback and contributions are welcome!
 
@@ -8,13 +10,6 @@ EchoQuery offers a streamlined, intuitive interface for developers. It simplifie
 ## Usage
 
 To use EchoQuery you have to import into your code:
-
-```php
-// Importing library
-use CastroItalo\EchoQuery\Builder;
-```
-
-And now is just to generate your queries string:
 
 - Query example:
 
@@ -52,3 +47,31 @@ $query = $echo_query->select(
 ## Contributing
 
 To contribute to the project make sure you have read [CONTRIBUTING](https://github.com/castroitalo/echo-query/blob/main/CONTRIBUTING.md) section.
+
+## Changelog (TODO)
+
+## Testing
+
+Each EchoQuery functionality is separated in traits, for the SQL SELECT statement is used the **BuilderSelect.php** trait, so you can run tests for each individual trait like:
+
+```shell
+composer run builder_select_tests
+```
+
+To run all tests just type:
+
+```shell
+composer run tests
+```
+
+## Contributing
+
+Please see [CONTRIBUTING](CONTRIBUTING.md) and [CODE_OF_CONDUCT](CODE_OF_CONDUCT.md) for details.
+
+## Credits
+
+- [Italo Castro](https://github.com/castroitalo)
+
+## License
+
+The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
