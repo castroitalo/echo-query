@@ -1,7 +1,5 @@
 # EchoQuery
 
-[![Software License][ico-license]](LICENSE.md)
-
 > **Status: In Development**
 > This library is currently in the development stage and may undergo significant changes. Feedback and contributions are welcome!
 
