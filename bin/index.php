@@ -6,21 +6,27 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 use CastroItalo\EchoQuery\Builder;
 
+// TODO:
+/**
+ *
+ * - Create tests for BuilderFrom::baseSubQueryFrom
+ *
+ */
+
 /**
  * Main function
  * @return void
  */
 function main(): void
 {
-    $echo_query = new Builder();
-
-    $sub_query = $echo_query->select(
+    $sub_query = (new Builder())->select(
         ['column_one'],
         ['column_two']
     )
-        ->from('table_one')
+        ->from('table_one', 'to')
         ->__toString();
-    $query = $echo_query->select(
+
+    $query = (new Builder())->select(
         ['a.column_one', 'co'],
         ['a.column_two', 'ct']
     )

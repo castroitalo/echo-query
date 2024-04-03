@@ -95,4 +95,42 @@ final class BuilderFromTest extends TestCase
             str_replace(' ', '', $actual),
         );
     }
+
+    /**
+     * Tests the ability to include a subquery within the FROM clause, along with a mandatory alias.
+     *
+     * This test ensures that the Builder class can handle subqueries as data sources in the FROM
+     * clause of an SQL query. It verifies that the Builder constructs the correct SQL syntax when
+     * a subquery is provided, incorporating it with an alias that facilitates referencing the
+     * subquery's result set within the outer query. The test constructs a subquery using the Builder,
+     * wraps it in a FROM clause with an alias, and then compares the final SQL output to the expected
+     * string, ignoring whitespace differences for flexibility in formatting.
+     *
+     * @return void
+     * @throws BuilderException If the Builder encounters an error in constructing the subquery or the main query.
+     * @throws ExpectationFailedException If the actual SQL query does not match the expected result.
+     */
+    public function testFromStatementWithSubQuery(): void
+    {
+        $sub_query = (new Builder())->select(
+            ['column_one'],
+            ['column_two']
+        )
+            ->from('table_one', 'to')
+            ->__toString();
+        $actual = $this->builder->select(
+            ['a.column_one', 'co'],
+            ['a.column_two', 'ct']
+        )
+            ->from($sub_query, 'a', true)
+            ->__toString();
+        $expect = 'SELECT a.column_one AS co, a.column_two AS ct FROM ( '
+            . 'SELECT column_one, column_two FROM table_one AS to'
+            . ') AS a';
+
+        $this->assertEquals(
+            str_replace(' ', '', $expect),
+            str_replace(' ', '', $actual),
+        );
+    }
 }

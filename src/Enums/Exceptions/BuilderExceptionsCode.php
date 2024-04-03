@@ -55,4 +55,15 @@ enum BuilderExceptionsCode: int
      * or logically incorrect query construction.
      */
     case NoPreviousWhereStatement = 1004;
+
+    /**
+     * Indicates the inclusion of multiple FROM statements in a single query.
+     *
+     * This exception code is used when there is an attempt to add more than one FROM statement
+     * to a single SQL query, which is not allowed. The presence of multiple FROM clauses in a query
+     * can lead to ambiguity and is generally indicative of a logical error in query construction.
+     * Proper query design should consolidate data sourcing to a single FROM clause, possibly
+     * supplemented by JOINs or subqueries as needed.
+     */
+    case MultipleFromStatement = 1005;
 }
