@@ -2,10 +2,8 @@
 
 All notable changes to `EchoQuery` will be documented in this file.
 
-## NEXT - YYYY-MM-DD
-
 ### Added
-- Nothing
+- Sub query on FROM statement
 
 ### Deprecated
 - Nothing
