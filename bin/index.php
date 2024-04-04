@@ -6,13 +6,6 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 use CastroItalo\EchoQuery\Builder;
 
-// TODO:
-/**
- *
- * - Create tests for BuilderFrom::baseSubQueryFrom
- *
- */
-
 /**
  * Main function
  * @return void

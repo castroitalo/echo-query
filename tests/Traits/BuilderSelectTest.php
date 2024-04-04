@@ -20,10 +20,10 @@ use PHPUnit\Framework\TestCase;
  * It tests various scenarios, including the inclusion of column aliases, the absence
  * of aliases, and error handling when invalid input is provided.
  *
- * @requires PHP 8.2
+ * @requires PHP ^8.2
  * @requires PHPUnit 10.5
  */
-#[RequiresPhp('8.2')]
+#[RequiresPhp('^8.2')]
 #[RequiresPhpunit('^10.5')]
 final class BuilderSelectTest extends TestCase
 {

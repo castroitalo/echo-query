@@ -2,6 +2,8 @@
 
 All notable changes to `EchoQuery` will be documented in this file.
 
+## Last update 03-04-2024
+
 ### Added
 - Sub query on FROM statement
 
@@ -9,10 +11,7 @@ All notable changes to `EchoQuery` will be documented in this file.
 - Nothing
 
 ### Fixed
-- Nothing
+- cs-php-fixer
 
 ### Removed
-- Nothing
-
-### Security
 - Nothing

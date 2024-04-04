@@ -18,10 +18,10 @@ use PHPUnit\Framework\TestCase;
  * by the Builder class of the EchoQuery library. It includes tests for basic FROM statements,
  * usage of table aliases, and FROM statements derived from subqueries.
  *
- * @requires PHP 8.2
+ * @requires PHP ^8.2
  * @requires PHPUnit 10.5
  */
-#[RequiresPhp('8.2')]
+#[RequiresPhp('^8.2')]
 #[RequiresPhpunit('^10.5')]
 final class BuilderFromTest extends TestCase
 {
@@ -114,13 +114,13 @@ final class BuilderFromTest extends TestCase
     {
         $sub_query = (new Builder())->select(
             ['column_one'],
-            ['column_two']
+            ['column_two'],
         )
             ->from('table_one', 'to')
             ->__toString();
         $actual = $this->builder->select(
             ['a.column_one', 'co'],
-            ['a.column_two', 'ct']
+            ['a.column_two', 'ct'],
         )
             ->from($sub_query, 'a', true)
             ->__toString();

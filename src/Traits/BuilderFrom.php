@@ -73,7 +73,7 @@ trait BuilderFrom
     private function baseFromStatementValidation(string $query, string $tableName): void
     {
         // Validate FROM existance conditions
-        if (!str_contains($query, 'SELECT')) {
+        if (! str_contains($query, 'SELECT')) {
             throw new BuilderException(
                 'No previous SELECT statement for FROM statement.',
                 $this->noPreviousSelectStatementErrorCode,
@@ -139,14 +139,14 @@ trait BuilderFrom
         if (is_null($subQueryAlias)) {
             throw new BuilderException(
                 'FROM alias is mandatory when it\'s used with sub-query',
-                $this->invalidAliasErrorCode
+                $this->invalidAliasErrorCode,
             );
         }
 
         if (str_contains($query, 'FROM')) {
             throw new BuilderException(
                 'SELECT statement can\'t have multiples FROM statement',
-                $this->multipleFromStatementErrorCode
+                $this->multipleFromStatementErrorCode,
             );
         }
 
