@@ -30,9 +30,9 @@ trait BuilderSelect
     /**
      * The error code associated with invalid column names.
      *
-     * @var int $invalidColumnName Error code to use when an invalid column name is encountered.
+     * @var int $invalidColumnNameExceptionCode Error code to use when an invalid column name is encountered.
      */
-    private int $invalidColumnName = BuilderExceptionsCode::InvalidColumnName->value;
+    private int $invalidColumnNameExceptionCode = BuilderExceptionsCode::InvalidColumnName->value;
 
     /**
      * Constructs the SELECT part of a query based on provided columns.
@@ -60,7 +60,7 @@ trait BuilderSelect
             if (is_null($columnName) || empty($columnName)) {
                 throw new BuilderException(
                     'Invalid SELECT statement columns.',
-                    $this->invalidColumnName,
+                    $this->invalidColumnNameExceptionCode,
                 );
             }
 

@@ -6,6 +6,7 @@ namespace CastroItalo\EchoQuery;
 
 use CastroItalo\EchoQuery\Traits\BuilderFrom;
 use CastroItalo\EchoQuery\Traits\BuilderSelect;
+use CastroItalo\EchoQuery\Traits\BuilderWhere;
 
 /**
  *
@@ -16,6 +17,7 @@ final class Builder
     // User Builder functionalities
     use BuilderSelect;
     use BuilderFrom;
+    use BuilderWhere;
 
     private string $query = '';
 
@@ -33,6 +35,13 @@ final class Builder
         } elseif ($subQueryFrom === false) {
             $this->query = $this->baseFrom($this->query, $tableName, $tableAlias);
         }
+
+        return $this;
+    }
+
+    public function where(string $columnName): self
+    {
+        $this->query = $this->baseWhere($this->query, $columnName);
 
         return $this;
     }

@@ -66,4 +66,6 @@ enum BuilderExceptionsCode: int
      * supplemented by JOINs or subqueries as needed.
      */
     case MultipleFromStatement = 1005;
+
+    case NoPreviousFromStatement = 1006;
 }

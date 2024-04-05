@@ -29,6 +29,7 @@
     "fix": "php-cs-fixer fix",
     "tests": "vendor/bin/phpunit --testsuit unit --colors --testdox tests",
     "builder_select_tests": "vendor/bin/phpunit --testsuit unit --colors --testdox tests/Traits/BuilderSelectTest.php",
-    "builder_from_tests": "vendor/bin/phpunit --testsuit unit --colors --testdox tests/Traits/BuilderFromTest.php"
+    "builder_from_tests": "vendor/bin/phpunit --testsuit unit --colors --testdox tests/Traits/BuilderFromTest.php",
+    "builder_where_tests": "vendor/bin/phpunit --testsuit unit --colors --testdox tests/Traits/BuilderWhereTest.php"
   }
 }

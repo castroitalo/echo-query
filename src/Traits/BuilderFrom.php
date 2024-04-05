@@ -30,23 +30,23 @@ trait BuilderFrom
     /**
      * The error code for when there is no previous SELECT statement.
      *
-     * @var int $noPreviousSelectStatementErrorCode Error code for missing SELECT statement before FROM.
+     * @var int $noPreviousSelectStatementExceptionCode Error code for missing SELECT statement before FROM.
      */
-    private int $noPreviousSelectStatementErrorCode = BuilderExceptionsCode::NoPreviousSelectStatement->value;
+    private int $noPreviousSelectStatementExceptionCode = BuilderExceptionsCode::NoPreviousSelectStatement->value;
 
     /**
      * The error code associated with an invalid table name.
      *
-     * @var int $invalidTableNameErrorCode Error code to use when an invalid table name is provided.
+     * @var int $invalidTableNameExceptionCode Error code to use when an invalid table name is provided.
      */
-    private int $invalidTableNameErrorCode = BuilderExceptionsCode::InvalidTableName->value;
+    private int $invalidTableNameExceptionCode = BuilderExceptionsCode::InvalidTableName->value;
 
     /**
      * The error code associated with an invalid alias.
      *
-     * @var int $invalidAliasErrorCode Error code to use when an invalid alias is provided.
+     * @var int $invalidAliasExceptionCode Error code to use when an invalid alias is provided.
      */
-    private int $invalidAliasErrorCode = BuilderExceptionsCode::InvalidAlias->value;
+    private int $invalidAliasExceptionCode = BuilderExceptionsCode::InvalidAlias->value;
 
     /**
      * The error code for when multiple FROM statements are included in a single query.
@@ -55,9 +55,9 @@ trait BuilderFrom
      * clause, aligning with SQL standards. An attempt to append an additional FROM statement
      * to a query that already includes one will result in a BuilderException being thrown.
      *
-     * @var int $multipleFromStatementErrorCode Error code indicating the presence of multiple FROM statements.
+     * @var int $multipleFromStatementExceptionCode Error code indicating the presence of multiple FROM statements.
      */
-    private int $multipleFromStatementErrorCode = BuilderExceptionsCode::MultipleFromStatement->value;
+    private int $multipleFromStatementExceptionCode = BuilderExceptionsCode::MultipleFromStatement->value;
 
     /**
      * Validates the necessary conditions for a FROM statement within the query.
@@ -76,7 +76,7 @@ trait BuilderFrom
         if (! str_contains($query, 'SELECT')) {
             throw new BuilderException(
                 'No previous SELECT statement for FROM statement.',
-                $this->noPreviousSelectStatementErrorCode,
+                $this->noPreviousSelectStatementExceptionCode,
             );
         }
 
@@ -84,7 +84,7 @@ trait BuilderFrom
         if (empty($tableName)) {
             throw new BuilderException(
                 'Table name can\'t be empty.',
-                $this->invalidTableNameErrorCode,
+                $this->invalidTableNameExceptionCode,
             );
         }
     }
@@ -139,14 +139,14 @@ trait BuilderFrom
         if (is_null($subQueryAlias)) {
             throw new BuilderException(
                 'FROM alias is mandatory when it\'s used with sub-query',
-                $this->invalidAliasErrorCode,
+                $this->invalidAliasExceptionCode,
             );
         }
 
         if (str_contains($query, 'FROM')) {
             throw new BuilderException(
                 'SELECT statement can\'t have multiples FROM statement',
-                $this->multipleFromStatementErrorCode,
+                $this->multipleFromStatementExceptionCode,
             );
         }
 
