@@ -46,6 +46,13 @@ final class Builder
         return $this;
     }
 
+    public function equalsTo(mixed $value): self
+    {
+        $this->query = $this->baseEqualsTo($this->query, $value);
+
+        return $this;
+    }
+
     public function __toString(): string
     {
         return $this->query;

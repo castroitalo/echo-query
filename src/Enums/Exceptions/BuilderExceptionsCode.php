@@ -67,5 +67,14 @@ enum BuilderExceptionsCode: int
      */
     case MultipleFromStatement = 1005;
 
+    /**
+     * Indicates an attempt to construct a WHERE clause without a preceding FROM statement.
+     *
+     * This exception code is used when a WHERE clause is being added to a query without a
+     * prior FROM statement. SQL syntax requires that the FROM clause precedes the WHERE clause,
+     * as the WHERE conditions apply to the dataset defined by the FROM clause. This error typically
+     * signifies a logical error in the order of query construction, highlighting the absence of
+     * the necessary FROM statement to define the data source for the query's filtering conditions.
+     */
     case NoPreviousFromStatement = 1006;
 }

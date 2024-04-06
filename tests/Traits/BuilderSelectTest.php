@@ -53,6 +53,7 @@ final class BuilderSelectTest extends TestCase
      * that includes column names with their respective aliases. The test checks
      * if the resulting SQL string matches the expected output, disregarding
      * differences in whitespace for comparison.
+     *
      * @return void
      * @throws BuilderException
      * @throws ExpectationFailedException
@@ -78,6 +79,7 @@ final class BuilderSelectTest extends TestCase
      * Ensures that the Builder class can generate a SELECT statement comprising
      * multiple columns without any aliases. The test compares the generated SQL
      * string against the expected format, ignoring whitespace variations.
+     *
      * @return void
      * @throws BuilderException
      * @throws ExpectationFailedException
@@ -104,6 +106,7 @@ final class BuilderSelectTest extends TestCase
      * BuilderException with a specific error message and code when an attempt
      * is made to construct a SELECT statement with invalid or missing column names.
      * It checks for the exception type, error code, and message accuracy.
+     *
      * @return void
      * @throws BuilderException
      */

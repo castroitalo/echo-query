@@ -2,16 +2,16 @@
 
 All notable changes to `EchoQuery` will be documented in this file.
 
-## Last update 04-04-2024
+## Last update 06-04-2024
 
 ### Added
-- Base where statement done and tested
+- Where statement equals to (=) comparison operator implemented
 
 ### Deprecated
 - Nothing
 
 ### Fixed
-- cs-php-fixer
+- Nothing
 
 ### Removed
 - Nothing

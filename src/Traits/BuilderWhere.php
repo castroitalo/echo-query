@@ -30,9 +30,9 @@ trait BuilderWhere
     /**
      * The error code for when a WHERE statement is attempted without a preceding FROM statement.
      *
-     * @var int $noPreviousFromStatementExceptionCode Error code indicating the absence of a required FROM clause.
+     * @var int $noPreviousSelectStatementExceptionCode Error code indicating the absence of a required FROM clause.
      */
-    private int $noPreviousFromStatementExceptionCode = BuilderExceptionsCode::NoPreviousFromStatement->value;
+    private int $noPreviousSelectStatementExceptionCode = BuilderExceptionsCode::NoPreviousSelectStatement->value;
 
     /**
      * The error code for when an invalid column name is provided in the WHERE clause.
@@ -40,6 +40,16 @@ trait BuilderWhere
      * @var int $invalidColumnNameExceptionCode Error code used when the column name for a WHERE clause is invalid or empty.
      */
     private int $invalidColumnNameExceptionCode = BuilderExceptionsCode::InvalidColumnName->value;
+
+    /**
+     * The error code for when an attempt is made to use a comparison operator without a preceding WHERE statement.
+     *
+     * This error code is triggered when a query tries to apply a comparison operation (e.g., '=', '>', '<')
+     * before establishing a WHERE clause, indicating a misuse of the query building process.
+     *
+     * @var int $noPreviousWhereStatementExceptionCode Error code indicating the required WHERE clause is missing.
+     */
+    private int $noPreviousWhereStatementExceptionCode = BuilderExceptionsCode::NoPreviousWhereStatement->value;
 
     /**
      * Constructs a WHERE clause for an SQL query based on the provided column name.
@@ -60,8 +70,8 @@ trait BuilderWhere
         // Exitance conditions
         if (! str_contains($query, 'SELECT')) {
             throw new BuilderException(
-                'No previous WHERE statement.',
-                $this->noPreviousFromStatementExceptionCode,
+                'No previous SELECT statement.',
+                $this->noPreviousSelectStatementExceptionCode,
             );
         }
 
@@ -74,6 +84,41 @@ trait BuilderWhere
 
         $this->where = ' WHERE ' . $columnName;
         $query .= $this->where;
+
+        return $query;
+    }
+
+    private function validateComparisonOperatorExistance(string $comparisonOperator, string $query): void
+    {
+        if (! str_contains($query, 'WHERE') || is_null($this->where)) {
+            throw new BuilderException(
+                'Comparison operator ' . $comparisonOperator . ' must have a previsou WHERE statemen.',
+                $this->noPreviousWhereStatementExceptionCode,
+            );
+        }
+    }
+
+    /**
+     * Appends an equality comparison to the WHERE clause of the query.
+     *
+     * After validating the presence of a WHERE clause, this method extends it with an
+     * equality ('=') comparison operator followed by the specified value. It updates the
+     * query to include this new condition, ensuring the WHERE clause accurately reflects
+     * the desired filter criteria.
+     *
+     * @param string $query The current SQL query being constructed.
+     * @param mixed $value The value to compare against using the equality operator.
+     * @return string The updated query string including the extended WHERE clause with the equality comparison.
+     * @throws BuilderException If an equality comparison is attempted without a prior WHERE clause.
+     */
+    private function baseEqualsTo(string $query, mixed $value): string
+    {
+        // Existance conditions
+        $this->validateComparisonOperatorExistance('=', $query);
+
+        $oldWhere = $this->where;
+        $newWhere = $this->where .= ' = ' . $value;
+        $query = str_replace($oldWhere, $newWhere, $query);
 
         return $query;
     }

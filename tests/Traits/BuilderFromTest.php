@@ -37,6 +37,7 @@ final class BuilderFromTest extends TestCase
      *
      * Initializes a new Builder instance before each test is run, ensuring a clean
      * state for every test case.
+     *
      * @return void
      */
     protected function setUp(): void
@@ -50,6 +51,7 @@ final class BuilderFromTest extends TestCase
      * This test verifies that the Builder class can generate a correct FROM statement as part of a
      * larger SQL query, without the use of table aliases. It constructs a SELECT query with a FROM
      * clause, comparing the resulting SQL string to the expected format, ignoring differences in whitespace.
+     *
      * @return void
      * @throws BuilderException
      * @throws ExpectationFailedException
@@ -76,6 +78,7 @@ final class BuilderFromTest extends TestCase
      * Ensures that the Builder class properly handles table aliases in the FROM statement of an SQL query.
      * The test constructs a SELECT query with a FROM clause that includes a table alias, and then compares
      * the output to the expected SQL string, with whitespace variations disregarded.
+     *
      * @return void
      * @throws BuilderException
      * @throws ExpectationFailedException
