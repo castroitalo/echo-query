@@ -151,6 +151,39 @@ final class BuilderWhereTest extends TestCase
     }
 
     /**
+     * Tests appending an equality comparison operator with a string value in a WHERE clause.
+     *
+     * Constructs an SQL query using the Builder class, incorporating a WHERE clause that applies
+     * an equality ('=') comparison to a string value. This test ensures that the resulting SQL string
+     * correctly reflects the intended comparison, including proper syntax and accurate representation
+     * of the string value within quotes. Differences in whitespace are disregarded to prioritize
+     * structural and syntactical accuracy.
+     *
+     * @return void
+     * @throws BuilderException
+     * @throws ExpectationFailedException
+     */
+    public function testWhereStatementEqualsToComparisonOperatorWithStringValue(): void
+    {
+        $actual = $this->builder->select(
+            ['column_one', 'co'],
+            ['column_two', 'ct'],
+        )
+            ->from('table_one', 'to')
+            ->where('column_one')
+            ->equalsTo('something')
+            ->__toString();
+        $expect = 'SELECT column_one AS co, column_two AS ct ' .
+            ' FROM table_one AS to ' .
+            ' WHERE column_one = \'something\' ';
+
+        $this->assertEquals(
+            str_replace(' ', '', $expect),
+            str_replace(' ', '', $actual),
+        );
+    }
+
+    /**
      * Tests the exception thrown when an equals to comparison is attempted without a preceding WHERE clause.
      *
      * Verifies that attempting to apply an equals to comparison operator without an established WHERE clause
@@ -164,7 +197,7 @@ final class BuilderWhereTest extends TestCase
     {
         $this->expectException(BuilderException::class);
         $this->expectExceptionCode(BuilderExceptionsCode::NoPreviousWhereStatement->value);
-        $this->expectExceptionMessage('Comparison operator = must have a previsou WHERE statemen.');
+        $this->expectExceptionMessage('Operator = must have a previsou WHERE statemen.');
         $this->builder->equalsTo(5);
     }
 }

@@ -88,11 +88,11 @@ trait BuilderWhere
         return $query;
     }
 
-    private function validateComparisonOperatorExistance(string $comparisonOperator, string $query): void
+    private function validateWhereStatementFilterOperator(string $operator, string $query): void
     {
         if (! str_contains($query, 'WHERE') || is_null($this->where)) {
             throw new BuilderException(
-                'Comparison operator ' . $comparisonOperator . ' must have a previsou WHERE statemen.',
+                'Operator ' . $operator . ' must have a previsou WHERE statemen.',
                 $this->noPreviousWhereStatementExceptionCode,
             );
         }
@@ -114,10 +114,17 @@ trait BuilderWhere
     private function baseEqualsTo(string $query, mixed $value): string
     {
         // Existance conditions
-        $this->validateComparisonOperatorExistance('=', $query);
+        $this->validateWhereStatementFilterOperator('=', $query);
 
         $oldWhere = $this->where;
-        $newWhere = $this->where .= ' = ' . $value;
+        $newWhere = $this->where;
+
+        if (is_string($value)) {
+            $newWhere .= ' = \'' . $value . '\' ';
+        } else {
+            $newWhere .= ' = ' . $value;
+        }
+
         $query = str_replace($oldWhere, $newWhere, $query);
 
         return $query;

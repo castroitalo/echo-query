@@ -26,7 +26,7 @@ function main(): void
     )
         ->from($sub_query, 'a', true)
         ->where('a.column_one')
-        ->equalsTo(5)
+        ->equalsTo('something')
         ->__toString();
 
     echo $query . PHP_EOL;
