@@ -200,4 +200,93 @@ final class BuilderWhereTest extends TestCase
         $this->expectExceptionMessage('Operator = must have a previsou WHERE statemen.');
         $this->builder->equalsTo(5);
     }
+
+    /**
+     * Tests appending a 'not equals to' comparison with the default operator in a WHERE clause.
+     *
+     * Constructs an SQL query using the Builder class, incorporating a WHERE clause that applies
+     * a 'not equals to' ('!=') comparison to a string value. The test ensures that the resulting SQL string
+     * correctly reflects the intended comparison, including proper syntax and accurate representation
+     * of the string value within quotes. Differences in whitespace are disregarded for structural
+     * and syntactical accuracy.
+     *
+     * @return void
+     * @throws BuilderException If the Builder encounters an error in forming the WHERE clause.
+     * @throws ExpectationFailedException If the actual SQL query does not match the expected format.
+     */
+    public function testWhereStatementNotEqualsToComparisonOperatorDefault(): void
+    {
+        $actual = $this->builder->select(
+            ['column_one', 'co'],
+            ['column_two', 'ct'],
+        )
+            ->from('table_one', 'to')
+            ->where('column_one')
+            ->notEqualsTo('something')
+            ->__toString();
+        $expect = 'SELECT column_one AS co, column_two AS ct ' .
+            ' FROM table_one AS to ' .
+            ' WHERE column_one != \'something\' ';
+
+        $this->assertEquals(
+            str_replace(' ', '', $expect),
+            str_replace(' ', '', $actual),
+        );
+    }
+
+    /**
+     * Tests appending a 'not equals to' comparison with a custom operator in a WHERE clause.
+     *
+     * Verifies the Builder's handling of a custom 'not equals to' operator ('<>') for a WHERE clause condition.
+     * This test confirms that the SQL query accurately represents the intended comparison with the specified
+     * operator and value, maintaining correct syntax and value quoting. Whitespace variations are ignored.
+     *
+     * @return void
+     * @throws BuilderException If an unsupported 'not equals to' operator is used or other errors occur.
+     * @throws ExpectationFailedException If the produced SQL does not align with the expected outcome.
+     */
+    public function testWhereStatementNotEqualsToComparisonOperatorCustom(): void
+    {
+        $actual = $this->builder->select(
+            ['column_one', 'co'],
+            ['column_two', 'ct'],
+        )
+            ->from('table_one', 'to')
+            ->where('column_one')
+            ->notEqualsTo('something', '<>')
+            ->__toString();
+        $expect = 'SELECT column_one AS co, column_two AS ct ' .
+            ' FROM table_one AS to ' .
+            ' WHERE column_one <> \'something\' ';
+
+        $this->assertEquals(
+            str_replace(' ', '', $expect),
+            str_replace(' ', '', $actual),
+        );
+    }
+
+    /**
+     * Tests the behavior when an invalid 'not equals to' operator is specified.
+     *
+     * Ensures that specifying an invalid 'not equals to' operator results in a BuilderException,
+     * indicating the incorrect usage of the operator. This test validates the Builder's ability to
+     * enforce correct SQL syntax and operator usage within WHERE clauses.
+     *
+     * @return void
+     * @throws BuilderException If an invalid operator is provided, demonstrating effective error handling.
+     */
+    public function testWhereStatementNotEqualsToComparisonOperatorInvalidOperator(): void
+    {
+        $this->expectException(BuilderException::class);
+        $this->expectExceptionCode(BuilderExceptionsCode::InvalidNotEqualsToOperator->value);
+        $this->expectExceptionMessage('Invalid not equals to operator: invalid');
+        $this->builder->select(
+            ['column_one', 'co'],
+            ['column_two', 'ct'],
+        )
+            ->from('table_one', 'to')
+            ->where('column_one')
+            ->notEqualsTo('something', 'invalid')
+            ->__toString();
+    }
 }

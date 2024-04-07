@@ -18,7 +18,7 @@ function main(): void
     )
         ->from('table_one')
         ->where('column_one')
-        ->equalsTo(5)
+        ->notEqualsTo(5)
         ->__toString();
     $query = (new Builder())->select(
         ['a.column_one', 'co'],
@@ -26,7 +26,7 @@ function main(): void
     )
         ->from($sub_query, 'a', true)
         ->where('a.column_one')
-        ->equalsTo('something')
+        ->notEqualsTo('something', '<>')
         ->__toString();
 
     echo $query . PHP_EOL;

@@ -53,6 +53,13 @@ final class Builder
         return $this;
     }
 
+    public function notEqualsTo(mixed $value, string $notEqualsToOperator = '!='): self
+    {
+        $this->query = $this->baseNotEqualsTo($this->query, $value, $notEqualsToOperator);
+
+        return $this;
+    }
+
     public function __toString(): string
     {
         return $this->query;

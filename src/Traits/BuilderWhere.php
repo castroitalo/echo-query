@@ -52,6 +52,17 @@ trait BuilderWhere
     private int $noPreviousWhereStatementExceptionCode = BuilderExceptionsCode::NoPreviousWhereStatement->value;
 
     /**
+     * The error code for using an unsupported 'not equals to' operator.
+     *
+     * This code is used when an attempt is made to use a 'not equals to' operator
+     * that is not recognized by the SQL standard supported by the query builder.
+     * Only '!=' and '<>' operators are considered valid for expressing inequality.
+     *
+     * @var int $invalidNotEqualsToOperatorExceptionCode Error code for using an invalid 'not equals to' operator.
+     */
+    private int $invalidNotEqualsToOperatorExceptionCode = BuilderExceptionsCode::InvalidNotEqualsToOperator->value;
+
+    /**
      * Constructs a WHERE clause for an SQL query based on the provided column name.
      *
      * This method appends a WHERE clause to a given SQL query, using the specified column name for the condition.
@@ -68,7 +79,7 @@ trait BuilderWhere
     private function baseWhere(string $query, string $columnName): string
     {
         // Exitance conditions
-        if (! str_contains($query, 'SELECT')) {
+        if (!str_contains($query, 'SELECT')) {
             throw new BuilderException(
                 'No previous SELECT statement.',
                 $this->noPreviousSelectStatementExceptionCode,
@@ -90,12 +101,35 @@ trait BuilderWhere
 
     private function validateWhereStatementFilterOperator(string $operator, string $query): void
     {
-        if (! str_contains($query, 'WHERE') || is_null($this->where)) {
+        if (!str_contains($query, 'WHERE') || is_null($this->where)) {
             throw new BuilderException(
                 'Operator ' . $operator . ' must have a previsou WHERE statemen.',
                 $this->noPreviousWhereStatementExceptionCode,
             );
         }
+    }
+
+    /**
+     * Constructs a new WHERE clause string with the specified comparison operator and value.
+     *
+     * This method forms a new WHERE clause by appending a comparison operator and its corresponding
+     * value to the existing WHERE condition. If the value is a string, it is enclosed in quotes.
+     *
+     * @param string $operator The comparison operator to use in the WHERE clause.
+     * @param mixed $value The value to compare against in the WHERE clause.
+     * @return string The newly constructed WHERE clause with the added condition.
+     */
+    private function getNewWhere(string $operator, mixed $value): string
+    {
+        $newWhere = $this->where;
+
+        if (is_string($value)) {
+            $newWhere .= ' ' . $operator . ' \'' . $value . '\' ';
+        } else {
+            $newWhere .= ' ' . $operator . ' ' . $value;
+        }
+
+        return $newWhere;
     }
 
     /**
@@ -117,16 +151,42 @@ trait BuilderWhere
         $this->validateWhereStatementFilterOperator('=', $query);
 
         $oldWhere = $this->where;
-        $newWhere = $this->where;
-
-        if (is_string($value)) {
-            $newWhere .= ' = \'' . $value . '\' ';
-        } else {
-            $newWhere .= ' = ' . $value;
-        }
+        $newWhere = $this->getNewWhere('=', $value);
 
         $query = str_replace($oldWhere, $newWhere, $query);
 
+        return $query;
+    }
+
+    /**
+     * Appends a 'not equals to' comparison to the WHERE clause of the query.
+     *
+     * Validates the presence of a WHERE clause and extends it with a 'not equals to'
+     * comparison operator ('!=' or '<>'), followed by the specified value. This ensures
+     * the WHERE clause accurately reflects the intended criteria.
+     *
+     * @param string $query The current SQL query being constructed.
+     * @param mixed $value The value to use in the 'not equals to' comparison.
+     * @param string $notEqualsToOperator The operator for the 'not equals to' comparison.
+     * @return string The updated query string including the extended WHERE clause.
+     * @throws BuilderException If attempting to use an unsupported 'not equals to' operator or without a prior WHERE clause.
+     */
+    private function baseNotEqualsTo(string $query, mixed $value, string $notEqualsToOperator): string
+    {
+        // Existance conditions
+        $this->validateWhereStatementFilterOperator($notEqualsToOperator, $query);
+
+        if ($notEqualsToOperator !== '!=' && $notEqualsToOperator !== '<>') {
+            throw new BuilderException(
+                'Invalid not equals to operator: ' . $notEqualsToOperator,
+                $this->invalidNotEqualsToOperatorExceptionCode,
+            );
+        }
+
+        $oldWhere = $this->where;
+        $newWhere = $this->getNewWhere($notEqualsToOperator, $value);
+
+        $query = str_replace($oldWhere, $newWhere, $query);
         return $query;
     }
 }
