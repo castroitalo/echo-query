@@ -79,14 +79,16 @@ enum BuilderExceptionsCode: int
     case NoPreviousFromStatement = 1006;
 
     /**
-     * Indicates the use of an invalid 'not equals to' operator in a query condition.
+     * Indicates the use of an unsupported or invalid comparison operator in a query condition.
      *
-     * This exception code is triggered when a query attempts to use a 'not equals to' comparison
-     * operator that is not recognized or supported by the SQL standard or the query builder's logic.
-     * The SQL standard supports '!=' and '<>' as valid 'not equals to' operators. Use of any other
-     * symbols or syntax for expressing 'not equals to' conditions will result in this error.
-     * This code ensures that queries are constructed with correct and standard-compliant syntax,
-     * preventing errors during query execution.
+     * This exception code is triggered when a query attempts to use a comparison operator that is not
+     * recognized or supported by the SQL standard or the query builder's logic. It underscores the importance
+     * of adhering to standard SQL comparison operators and the query builder's specifications for ensuring
+     * query validity and preventing errors during query execution.
+     *
+     * Supported operators typically include '=', '!=', '<>', '<', '>', '<=', and '>=', among others.
+     * Using operators outside of these conventions or misusing them in the context of a query can lead
+     * to this error, promoting the use of correct syntax and logical operator application in query conditions.
      */
-    case InvalidNotEqualsToOperator = 1007;
+    case InvalidComparisonOperator = 1007;
 }

@@ -28,6 +28,17 @@ trait BuilderWhere
     private ?string $where = null;
 
     /**
+     * List of available comparison operators supported by the query builder.
+     *
+     * This constant defines a set of SQL comparison operators that are validated for use
+     * in constructing WHERE clauses, ensuring adherence to SQL standards and compatibility
+     * with the underlying database engine.
+     *
+     * @var string[] A list of valid SQL comparison operators.
+     */
+    private const AVALIABLE_COMPARISON_OPERATORS = ['=', '!=', '<>', '<', '>', '<=', '>='];
+
+    /**
      * The error code for when a WHERE statement is attempted without a preceding FROM statement.
      *
      * @var int $noPreviousSelectStatementExceptionCode Error code indicating the absence of a required FROM clause.
@@ -52,15 +63,15 @@ trait BuilderWhere
     private int $noPreviousWhereStatementExceptionCode = BuilderExceptionsCode::NoPreviousWhereStatement->value;
 
     /**
-     * The error code for using an unsupported 'not equals to' operator.
+     * The error code for using an unsupported comparison operator in a WHERE clause.
      *
-     * This code is used when an attempt is made to use a 'not equals to' operator
-     * that is not recognized by the SQL standard supported by the query builder.
-     * Only '!=' and '<>' operators are considered valid for expressing inequality.
+     * Triggered when a query attempts to use a comparison operator outside of those deemed valid
+     * by the query builder. This ensures that only SQL-standard and universally recognized comparison
+     * operators are used, maintaining the integrity and executability of the SQL query.
      *
-     * @var int $invalidNotEqualsToOperatorExceptionCode Error code for using an invalid 'not equals to' operator.
+     * @var int $invalidComparisonOperatorExceptionCode Error code for an invalid comparison operator.
      */
-    private int $invalidNotEqualsToOperatorExceptionCode = BuilderExceptionsCode::InvalidNotEqualsToOperator->value;
+    private int $invalidComparisonOperatorExceptionCode = BuilderExceptionsCode::InvalidComparisonOperator->value;
 
     /**
      * Constructs a WHERE clause for an SQL query based on the provided column name.
@@ -99,122 +110,39 @@ trait BuilderWhere
         return $query;
     }
 
-    private function validateWhereStatementFilterOperator(string $operator, string $query): void
+    /**
+     * Dynamically applies a comparison operator within an existing WHERE clause of the SQL query.
+     *
+     * This method extends the WHERE clause by incorporating a specified comparison operator and value,
+     * ensuring the operator is supported and the WHERE clause construction adheres to SQL syntax rules.
+     * It validates the presence of a WHERE clause and the validity of the comparison operator before
+     * modifying the query, throwing an exception for any discrepancies.
+     *
+     * @param string $query The current SQL query being constructed.
+     * @param string $comparisonOperator The comparison operator to apply (e.g., '=', '!=', '<').
+     * @param mixed $value The value to be compared against, formatted appropriately based on its type.
+     * @return string The updated SQL query including the modified WHERE clause with the new comparison.
+     * @throws BuilderException If no previous WHERE clause is found or if an unsupported comparison operator is used.
+     */
+    private function baseComparisonOperator(string $query, string $comparisonOperator, mixed $value): string
     {
+        // Existance conditions
         if (! str_contains($query, 'WHERE') || is_null($this->where)) {
             throw new BuilderException(
-                'Operator ' . $operator . ' must have a previsou WHERE statemen.',
+                'Operator ' . $comparisonOperator . ' must have a previsou WHERE statemen.',
                 $this->noPreviousWhereStatementExceptionCode,
             );
         }
-    }
 
-    /**
-     * Constructs a new WHERE clause string with the specified comparison operator and value.
-     *
-     * This method forms a new WHERE clause by appending a comparison operator and its corresponding
-     * value to the existing WHERE condition. If the value is a string, it is enclosed in quotes.
-     *
-     * @param string $operator The comparison operator to use in the WHERE clause.
-     * @param mixed $value The value to compare against in the WHERE clause.
-     * @return string The newly constructed WHERE clause with the added condition.
-     */
-    private function getNewWhere(string $operator, mixed $value): string
-    {
-        $newWhere = $this->where;
-
-        if (is_string($value)) {
-            $newWhere .= ' ' . $operator . ' \'' . $value . '\' ';
-        } else {
-            $newWhere .= ' ' . $operator . ' ' . $value;
-        }
-
-        return $newWhere;
-    }
-
-    /**
-     * Appends an equality comparison to the WHERE clause of the query.
-     *
-     * After validating the presence of a WHERE clause, this method extends it with an
-     * equality ('=') comparison operator followed by the specified value. It updates the
-     * query to include this new condition, ensuring the WHERE clause accurately reflects
-     * the desired filter criteria.
-     *
-     * @param string $query The current SQL query being constructed.
-     * @param mixed $value The value to compare against using the equality operator.
-     * @return string The updated query string including the extended WHERE clause with the equality comparison.
-     * @throws BuilderException If an equality comparison is attempted without a prior WHERE clause.
-     */
-    private function baseEqualsTo(string $query, mixed $value): string
-    {
-        // Existance conditions
-        $this->validateWhereStatementFilterOperator('=', $query);
-
-        $oldWhere = $this->where;
-        $newWhere = $this->getNewWhere('=', $value);
-
-        $query = str_replace($oldWhere, $newWhere, $query);
-
-        return $query;
-    }
-
-    /**
-     * Appends a 'not equals to' comparison to the WHERE clause of the query.
-     *
-     * Validates the presence of a WHERE clause and extends it with a 'not equals to'
-     * comparison operator ('!=' or '<>'), followed by the specified value. This ensures
-     * the WHERE clause accurately reflects the intended criteria.
-     *
-     * @param string $query The current SQL query being constructed.
-     * @param mixed $value The value to use in the 'not equals to' comparison.
-     * @param string $notEqualsToOperator The operator for the 'not equals to' comparison.
-     * @return string The updated query string including the extended WHERE clause.
-     * @throws BuilderException If attempting to use an unsupported 'not equals to' operator or without a prior WHERE clause.
-     */
-    private function baseNotEqualsTo(string $query, mixed $value, string $notEqualsToOperator): string
-    {
-        // Existance conditions
-        $this->validateWhereStatementFilterOperator($notEqualsToOperator, $query);
-
-        if ($notEqualsToOperator !== '!=' && $notEqualsToOperator !== '<>') {
+        if (! in_array($comparisonOperator, self::AVALIABLE_COMPARISON_OPERATORS)) {
             throw new BuilderException(
-                'Invalid not equals to operator: ' . $notEqualsToOperator,
-                $this->invalidNotEqualsToOperatorExceptionCode,
+                'Invalid ' . $comparisonOperator . ' comparison operator',
+                $this->invalidComparisonOperatorExceptionCode,
             );
         }
 
         $oldWhere = $this->where;
-        $newWhere = $this->getNewWhere($notEqualsToOperator, $value);
-        $query = str_replace($oldWhere, $newWhere, $query);
-
-        return $query;
-    }
-
-    /**
-     * Appends a 'less than' comparison to the WHERE clause of the query.
-     *
-     * After ensuring a WHERE clause is present, this method extends it with a 'less than' ('<')
-     * comparison operator followed by the specified value. The method seamlessly updates the query,
-     * incorporating this new condition to reflect the intended filtering criteria accurately.
-     *
-     * This approach allows for granular control over the query's filtering logic, enabling the
-     * construction of more complex and precise query conditions.
-     *
-     * @param string $query The current SQL query under construction.
-     * @param mixed $value The value against which the column specified in the WHERE clause is to be compared.
-     *                     The method handles both numerical and string values appropriately, ensuring the
-     *                     generated SQL is syntactically correct.
-     * @return string The modified SQL query string, now including the 'less than' comparison in the WHERE clause.
-     * @throws BuilderException If a 'less than' comparison is attempted without a prior WHERE clause, reflecting
-     *                          a misunderstanding or error in the order of query construction.
-     */
-    private function baseLessThan(string $query, mixed $value): string
-    {
-        // Existance conditions
-        $this->validateWhereStatementFilterOperator('<', $query);
-
-        $oldWhere = $this->where;
-        $newWhere = $this->getNewWhere('<', $value);
+        $newWhere = $this->where . ' ' . $comparisonOperator . ' ' . (is_string($value) ? ' \'' . $value . '\' ' : $value);
         $query = str_replace($oldWhere, $newWhere, $query);
 
         return $query;

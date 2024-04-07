@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace CastroItalo\EchoQuery;
 
+use CastroItalo\EchoQuery\Exceptions\BuilderException;
 use CastroItalo\EchoQuery\Traits\BuilderFrom;
 use CastroItalo\EchoQuery\Traits\BuilderSelect;
 use CastroItalo\EchoQuery\Traits\BuilderWhere;
@@ -48,21 +49,50 @@ final class Builder
 
     public function equalsTo(mixed $value): self
     {
-        $this->query = $this->baseEqualsTo($this->query, $value);
+        $this->query = $this->baseComparisonOperator($this->query, '=', $value);
 
         return $this;
     }
 
     public function notEqualsTo(mixed $value, string $notEqualsToOperator = '!='): self
     {
-        $this->query = $this->baseNotEqualsTo($this->query, $value, $notEqualsToOperator);
+        // Validate not equals to comparison operator
+        if (! in_array($notEqualsToOperator, ['!=', '<>'])) {
+            throw new BuilderException(
+                'Invalid ' . $notEqualsToOperator . ' comparison operator',
+                $this->invalidComparisonOperatorExceptionCode,
+            );
+        }
+
+        $this->query = $this->baseComparisonOperator($this->query, $notEqualsToOperator, $value);
 
         return $this;
     }
 
     public function lessThan(mixed $value): self
     {
-        $this->query = $this->baseLessThan($this->query, $value);
+        $this->query = $this->baseComparisonOperator($this->query, '<', $value);
+
+        return $this;
+    }
+
+    public function lessThanEqualsTo(mixed $value): self
+    {
+        $this->query = $this->baseComparisonOperator($this->query, '<=', $value);
+
+        return $this;
+    }
+
+    public function greaterThan(mixed $value): self
+    {
+        $this->query = $this->baseComparisonOperator($this->query, '>', $value);
+
+        return $this;
+    }
+
+    public function greaterThanEqualsTo(mixed $value): self
+    {
+        $this->query = $this->baseComparisonOperator($this->query, '>=', $value);
 
         return $this;
     }

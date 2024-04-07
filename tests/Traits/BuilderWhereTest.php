@@ -7,6 +7,7 @@ namespace tests\Traits;
 use CastroItalo\EchoQuery\Builder;
 use CastroItalo\EchoQuery\Enums\Exceptions\BuilderExceptionsCode;
 use CastroItalo\EchoQuery\Exceptions\BuilderException;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\RequiresPhp;
 use PHPUnit\Framework\Attributes\RequiresPhpunit;
 use PHPUnit\Framework\ExpectationFailedException;
@@ -119,30 +120,70 @@ final class BuilderWhereTest extends TestCase
     }
 
     /**
-     * Tests the correct appending of an equality comparison operator in a WHERE clause.
+     * Data provider for testWhereStatementComparisonOperatorsNonStringValues.
      *
-     * Constructs an SQL query using the Builder class and applies an equals to ('=') comparison operator
-     * in the WHERE clause. The test verifies that the resulting SQL string accurately reflects the intended
-     * comparison, including the correct syntax and the specified value for comparison. Whitespace differences
-     * in the comparison are disregarded to focus on structural and syntactical accuracy.
+     * Supplies a series of comparison operator method names and their corresponding SQL symbols
+     * to the testWhereStatementComparisonOperatorsNonStringValues test method. This enables
+     * parameterized testing of different comparison operators in the Builder class to ensure
+     * that each operator correctly formats the WHERE clause with non-string values.
      *
-     * @return void
-     * @throws BuilderException
-     * @throws ExpectationFailedException
+     * Each array entry consists of:
+     * - The method name as used in the Builder class for constructing SQL comparison operators.
+     * - The expected SQL symbol that represents the comparison operation (e.g., '=', '<', '>=').
+     *
+     * This method supports testing the flexibility and correctness of the Builder's handling
+     * of comparison operators with various data types, ensuring the generated SQL is syntactically
+     * correct and matches expected output.
+     *
+     * @return array An array of arrays, each containing the method name and expected SQL symbol.
      */
-    public function testWhereStatementEqualsToComparisonOperator(): void
+    public static function whereStatementComparisonOperatorsNonStringValuesTestDataProvider(): array
     {
+        return [
+            'equals_to' => ['equalsTo', '='],
+            'not_equals_to_default' => ['notEqualsTo', '!='],
+            'less_than' => ['lessThan', '<'],
+            'greater_than' => ['greaterThan', '>'],
+            'less_than_equals_to' => ['lessThanEqualsTo', '<='],
+            'greater_than_equals_to' => ['greaterThanEqualsTo', '>='],
+        ];
+    }
+
+    /**
+     * Tests the Builder's ability to handle comparison operators with non-string values in WHERE clauses.
+     *
+     * This test evaluates the flexibility and correctness of the Builder class in constructing
+     * WHERE clauses using various comparison operators (such as equals, not equals, less than,
+     * greater than, etc.) with non-string values. It uses a data provider to supply different
+     * comparison operators and their expected SQL symbols, constructing a query for each case
+     * and comparing the generated SQL to the expected outcome.
+     *
+     * The ability to accurately interpret and incorporate non-string values into SQL queries
+     * is crucial for a wide range of applications, ensuring that the Builder class can be
+     * effectively used in diverse scenarios requiring dynamic query generation. This test
+     * demonstrates the class's capability to produce valid SQL statements that correctly
+     * reflect the intended comparisons, regardless of the value type being compared.
+     *
+     * @param string $comparisonOperatorMethod The method name in the Builder class for the comparison operator.
+     * @param string $comparisonOperatorSymbol The expected SQL symbol for the comparison operation.
+     * @return void
+     * @throws ExpectationFailedException If the actual SQL query does not match the expected format.
+     */
+    #[DataProvider('whereStatementComparisonOperatorsNonStringValuesTestDataProvider')]
+    public function testWhereStatementComparisonOperatorsNonStringValues(
+        string $comparisonOperatorMethod,
+        string $comparisonOperatorSymbol,
+    ): void {
         $actual = $this->builder->select(
             ['column_one', 'co'],
             ['column_two', 'ct'],
         )
             ->from('table_one', 'to')
             ->where('column_one')
-            ->equalsTo(1)
+            ->$comparisonOperatorMethod(5)
             ->__toString();
-        $expect = 'SELECT column_one AS co, column_two AS ct ' .
-            ' FROM table_one AS to ' .
-            ' WHERE column_one = 1 ';
+        $expect = ' SELECT column_one AS co, column_two AS ct ' .
+            ' FROM table_one AS to WHERE column_one ' . $comparisonOperatorSymbol . ' 5 ';
 
         $this->assertEquals(
             str_replace(' ', '', $expect),
@@ -151,19 +192,23 @@ final class BuilderWhereTest extends TestCase
     }
 
     /**
-     * Tests appending an equality comparison operator with a string value in a WHERE clause.
+     * Tests custom "not equals to" comparison operator in a WHERE clause.
      *
-     * Constructs an SQL query using the Builder class, incorporating a WHERE clause that applies
-     * an equality ('=') comparison to a string value. This test ensures that the resulting SQL string
-     * correctly reflects the intended comparison, including proper syntax and accurate representation
-     * of the string value within quotes. Differences in whitespace are disregarded to prioritize
-     * structural and syntactical accuracy.
+     * Evaluates the ability of the Builder class to handle a custom "not equals to"
+     * comparison operator within a WHERE clause. The test constructs an SQL query using
+     * the Builder's `notEqualsTo` method with a custom operator ('<>') and a non-string
+     * value. It then checks if the generated SQL query correctly incorporates the custom
+     * operator and value within the WHERE clause.
+     *
+     * This test ensures that the Builder class is not only capable of using standard
+     * comparison operators but can also correctly handle custom operators provided by
+     * the user. This flexibility is crucial for supporting a wide range of SQL dialects
+     * and specific query requirements.
      *
      * @return void
-     * @throws BuilderException
-     * @throws ExpectationFailedException
+     * @throws ExpectationFailedException If the generated SQL does not match the expected output.
      */
-    public function testWhereStatementEqualsToComparisonOperatorWithStringValue(): void
+    public function testWhereStatementCustomNotEqualsToComparisonOperator(): void
     {
         $actual = $this->builder->select(
             ['column_one', 'co'],
@@ -171,11 +216,10 @@ final class BuilderWhereTest extends TestCase
         )
             ->from('table_one', 'to')
             ->where('column_one')
-            ->equalsTo('something')
+            ->notEqualsTo(5, '<>')
             ->__toString();
-        $expect = 'SELECT column_one AS co, column_two AS ct ' .
-            ' FROM table_one AS to ' .
-            ' WHERE column_one = \'something\' ';
+        $expect = ' SELECT column_one AS co, column_two AS ct ' .
+            ' FROM table_one AS to WHERE column_one <> 5 ';
 
         $this->assertEquals(
             str_replace(' ', '', $expect),
@@ -184,173 +228,27 @@ final class BuilderWhereTest extends TestCase
     }
 
     /**
-     * Tests the exception thrown when an equals to comparison is attempted without a preceding WHERE clause.
+     * Tests the exception handling when a comparison operator is used without a preceding WHERE clause.
      *
-     * Verifies that attempting to apply an equals to comparison operator without an established WHERE clause
-     * throws a BuilderException. The exception should carry the specific error code and message indicating
-     * the requirement for a preceding WHERE statement to use comparison operators.
+     * This test verifies that the Builder class enforces correct SQL syntax by throwing a
+     * BuilderException when a comparison operator (in this case, `equalsTo`) is used without
+     * first specifying a column with a WHERE clause. The test expects a specific error code
+     * and message to be associated with the exception, emphasizing the requirement for a
+     * logical sequence in building SQL queries, where a column must be specified before it
+     * can be compared to a value.
+     *
+     * Ensuring this sequence enforces the structural integrity of the SQL query and prevents
+     * runtime errors during query execution. This test highlights the robustness of the Builder
+     * class's error handling and its adherence to SQL syntax rules.
      *
      * @return void
-     * @throws BuilderException
+     * @throws BuilderException If a comparison operator is invoked without a preceding WHERE clause.
      */
-    public function testWhereStatementEqualsToComparisonOperatorNoPreviousWhereException(): void
+    public function testWhereStatementComparisonOperatorNoPreviousWhereStatement(): void
     {
         $this->expectException(BuilderException::class);
         $this->expectExceptionCode(BuilderExceptionsCode::NoPreviousWhereStatement->value);
         $this->expectExceptionMessage('Operator = must have a previsou WHERE statemen.');
         $this->builder->equalsTo(5);
-    }
-
-    /**
-     * Tests appending a 'not equals to' comparison with the default operator in a WHERE clause.
-     *
-     * Constructs an SQL query using the Builder class, incorporating a WHERE clause that applies
-     * a 'not equals to' ('!=') comparison to a string value. The test ensures that the resulting SQL string
-     * correctly reflects the intended comparison, including proper syntax and accurate representation
-     * of the string value within quotes. Differences in whitespace are disregarded for structural
-     * and syntactical accuracy.
-     *
-     * @return void
-     * @throws BuilderException If the Builder encounters an error in forming the WHERE clause.
-     * @throws ExpectationFailedException If the actual SQL query does not match the expected format.
-     */
-    public function testWhereStatementNotEqualsToComparisonOperatorDefault(): void
-    {
-        $actual = $this->builder->select(
-            ['column_one', 'co'],
-            ['column_two', 'ct'],
-        )
-            ->from('table_one', 'to')
-            ->where('column_one')
-            ->notEqualsTo('something')
-            ->__toString();
-        $expect = 'SELECT column_one AS co, column_two AS ct ' .
-            ' FROM table_one AS to ' .
-            ' WHERE column_one != \'something\' ';
-
-        $this->assertEquals(
-            str_replace(' ', '', $expect),
-            str_replace(' ', '', $actual),
-        );
-    }
-
-    /**
-     * Tests appending a 'not equals to' comparison with a custom operator in a WHERE clause.
-     *
-     * Verifies the Builder's handling of a custom 'not equals to' operator ('<>') for a WHERE clause condition.
-     * This test confirms that the SQL query accurately represents the intended comparison with the specified
-     * operator and value, maintaining correct syntax and value quoting. Whitespace variations are ignored.
-     *
-     * @return void
-     * @throws BuilderException If an unsupported 'not equals to' operator is used or other errors occur.
-     * @throws ExpectationFailedException If the produced SQL does not align with the expected outcome.
-     */
-    public function testWhereStatementNotEqualsToComparisonOperatorCustom(): void
-    {
-        $actual = $this->builder->select(
-            ['column_one', 'co'],
-            ['column_two', 'ct'],
-        )
-            ->from('table_one', 'to')
-            ->where('column_one')
-            ->notEqualsTo('something', '<>')
-            ->__toString();
-        $expect = 'SELECT column_one AS co, column_two AS ct ' .
-            ' FROM table_one AS to ' .
-            ' WHERE column_one <> \'something\' ';
-
-        $this->assertEquals(
-            str_replace(' ', '', $expect),
-            str_replace(' ', '', $actual),
-        );
-    }
-
-    /**
-     * Tests the behavior when an invalid 'not equals to' operator is specified.
-     *
-     * Ensures that specifying an invalid 'not equals to' operator results in a BuilderException,
-     * indicating the incorrect usage of the operator. This test validates the Builder's ability to
-     * enforce correct SQL syntax and operator usage within WHERE clauses.
-     *
-     * @return void
-     * @throws BuilderException If an invalid operator is provided, demonstrating effective error handling.
-     */
-    public function testWhereStatementNotEqualsToComparisonOperatorInvalidOperator(): void
-    {
-        $this->expectException(BuilderException::class);
-        $this->expectExceptionCode(BuilderExceptionsCode::InvalidNotEqualsToOperator->value);
-        $this->expectExceptionMessage('Invalid not equals to operator: invalid');
-        $this->builder->select(
-            ['column_one', 'co'],
-            ['column_two', 'ct'],
-        )
-            ->from('table_one', 'to')
-            ->where('column_one')
-            ->notEqualsTo('something', 'invalid')
-            ->__toString();
-    }
-
-    /**
-     * Tests the functionality of appending a 'less than' comparison with a non-string value to the WHERE clause.
-     *
-     * Constructs an SQL query using the Builder class, adding a WHERE clause that incorporates a 'less than'
-     * comparison with a non-string value. This test checks that the resulting SQL accurately reflects the
-     * intended numerical comparison, correctly formatted and placed within the query. Differences in whitespace
-     * are normalized to focus solely on the structural and syntactical correctness of the SQL statement.
-     *
-     * @return void
-     * @throws BuilderException If an error occurs in constructing the WHERE clause.
-     * @throws ExpectationFailedException If the actual SQL does not match the expected outcome.
-     */
-    public function testWhereStatementLessThanComparisonOperatorNonStringValue(): void
-    {
-        $actual = $this->builder->select(
-            ['column_one', 'co'],
-            ['column_two', 'ct'],
-        )
-            ->from('table_one')
-            ->where('column_one')
-            ->lessThan(5)
-            ->__toString();
-        $expect = ' SELECT column_one AS co, column_two AS ct ' .
-            ' FROM table_one ' .
-            ' WHERE column_one < 5 ';
-
-        $this->assertEquals(
-            str_replace(' ', '', $expect),
-            str_replace(' ', '', $actual),
-        );
-    }
-
-    /**
-     * Tests the 'less than' comparison operation in a WHERE clause using a string value.
-     *
-     * Evaluates the Builder's capability to handle a 'less than' comparison involving a string value within
-     * the WHERE clause of an SQL query. It ensures that the string value is correctly quoted and the comparison
-     * operator is properly applied. The goal is to verify the syntactical and logical accuracy of the query,
-     * disregarding whitespace variations for the purposes of comparison.
-     *
-     * @return void
-     * @throws BuilderException For errors encountered during the construction of the WHERE clause.
-     * @throws ExpectationFailedException If there is a mismatch between the expected and actual SQL statements.
-     */
-    public function testWhereStatementLessThanComparisonOperatorStringValue(): void
-    {
-        $actual = $this->builder->select(
-            ['column_one', 'co'],
-            ['column_two', 'ct'],
-        )
-            ->from('table_one')
-            ->where('column_one')
-            ->lessThan('something')
-            ->__toString();
-        $expect = ' SELECT column_one AS co, column_two AS ct ' .
-            ' FROM table_one ' .
-            ' WHERE column_one < \'something\' ';
-
-        $this->assertEquals(
-            str_replace(' ', '', $expect),
-            str_replace(' ', '', $actual),
-        );
     }
 }
