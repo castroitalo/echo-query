@@ -289,4 +289,68 @@ final class BuilderWhereTest extends TestCase
             ->notEqualsTo('something', 'invalid')
             ->__toString();
     }
+
+    /**
+     * Tests the functionality of appending a 'less than' comparison with a non-string value to the WHERE clause.
+     *
+     * Constructs an SQL query using the Builder class, adding a WHERE clause that incorporates a 'less than'
+     * comparison with a non-string value. This test checks that the resulting SQL accurately reflects the
+     * intended numerical comparison, correctly formatted and placed within the query. Differences in whitespace
+     * are normalized to focus solely on the structural and syntactical correctness of the SQL statement.
+     *
+     * @return void
+     * @throws BuilderException If an error occurs in constructing the WHERE clause.
+     * @throws ExpectationFailedException If the actual SQL does not match the expected outcome.
+     */
+    public function testWhereStatementLessThanComparisonOperatorNonStringValue(): void
+    {
+        $actual = $this->builder->select(
+            ['column_one', 'co'],
+            ['column_two', 'ct'],
+        )
+            ->from('table_one')
+            ->where('column_one')
+            ->lessThan(5)
+            ->__toString();
+        $expect = ' SELECT column_one AS co, column_two AS ct ' .
+            ' FROM table_one ' .
+            ' WHERE column_one < 5 ';
+
+        $this->assertEquals(
+            str_replace(' ', '', $expect),
+            str_replace(' ', '', $actual),
+        );
+    }
+
+    /**
+     * Tests the 'less than' comparison operation in a WHERE clause using a string value.
+     *
+     * Evaluates the Builder's capability to handle a 'less than' comparison involving a string value within
+     * the WHERE clause of an SQL query. It ensures that the string value is correctly quoted and the comparison
+     * operator is properly applied. The goal is to verify the syntactical and logical accuracy of the query,
+     * disregarding whitespace variations for the purposes of comparison.
+     *
+     * @return void
+     * @throws BuilderException For errors encountered during the construction of the WHERE clause.
+     * @throws ExpectationFailedException If there is a mismatch between the expected and actual SQL statements.
+     */
+    public function testWhereStatementLessThanComparisonOperatorStringValue(): void
+    {
+        $actual = $this->builder->select(
+            ['column_one', 'co'],
+            ['column_two', 'ct'],
+        )
+            ->from('table_one')
+            ->where('column_one')
+            ->lessThan('something')
+            ->__toString();
+        $expect = ' SELECT column_one AS co, column_two AS ct ' .
+            ' FROM table_one ' .
+            ' WHERE column_one < \'something\' ';
+
+        $this->assertEquals(
+            str_replace(' ', '', $expect),
+            str_replace(' ', '', $actual),
+        );
+    }
 }

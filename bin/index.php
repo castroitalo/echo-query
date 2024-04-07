@@ -12,21 +12,13 @@ use CastroItalo\EchoQuery\Builder;
  */
 function main(): void
 {
-    $sub_query = (new Builder())->select(
-        ['column_one'],
-        ['column_two']
-    )
-        ->from('table_one')
-        ->where('column_one')
-        ->notEqualsTo(5)
-        ->__toString();
     $query = (new Builder())->select(
         ['a.column_one', 'co'],
         ['a.column_two', 'ct']
     )
-        ->from($sub_query, 'a', true)
+        ->from('table_one', 'a')
         ->where('a.column_one')
-        ->notEqualsTo('something', '<>')
+        ->lessThan(5)
         ->__toString();
 
     echo $query . PHP_EOL;

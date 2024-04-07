@@ -60,6 +60,13 @@ final class Builder
         return $this;
     }
 
+    public function lessThan(mixed $value): self
+    {
+        $this->query = $this->baseLessThan($this->query, $value);
+
+        return $this;
+    }
+
     public function __toString(): string
     {
         return $this->query;

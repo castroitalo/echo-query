@@ -79,7 +79,7 @@ trait BuilderWhere
     private function baseWhere(string $query, string $columnName): string
     {
         // Exitance conditions
-        if (!str_contains($query, 'SELECT')) {
+        if (! str_contains($query, 'SELECT')) {
             throw new BuilderException(
                 'No previous SELECT statement.',
                 $this->noPreviousSelectStatementExceptionCode,
@@ -101,7 +101,7 @@ trait BuilderWhere
 
     private function validateWhereStatementFilterOperator(string $operator, string $query): void
     {
-        if (!str_contains($query, 'WHERE') || is_null($this->where)) {
+        if (! str_contains($query, 'WHERE') || is_null($this->where)) {
             throw new BuilderException(
                 'Operator ' . $operator . ' must have a previsou WHERE statemen.',
                 $this->noPreviousWhereStatementExceptionCode,
@@ -185,8 +185,38 @@ trait BuilderWhere
 
         $oldWhere = $this->where;
         $newWhere = $this->getNewWhere($notEqualsToOperator, $value);
-
         $query = str_replace($oldWhere, $newWhere, $query);
+
+        return $query;
+    }
+
+    /**
+     * Appends a 'less than' comparison to the WHERE clause of the query.
+     *
+     * After ensuring a WHERE clause is present, this method extends it with a 'less than' ('<')
+     * comparison operator followed by the specified value. The method seamlessly updates the query,
+     * incorporating this new condition to reflect the intended filtering criteria accurately.
+     *
+     * This approach allows for granular control over the query's filtering logic, enabling the
+     * construction of more complex and precise query conditions.
+     *
+     * @param string $query The current SQL query under construction.
+     * @param mixed $value The value against which the column specified in the WHERE clause is to be compared.
+     *                     The method handles both numerical and string values appropriately, ensuring the
+     *                     generated SQL is syntactically correct.
+     * @return string The modified SQL query string, now including the 'less than' comparison in the WHERE clause.
+     * @throws BuilderException If a 'less than' comparison is attempted without a prior WHERE clause, reflecting
+     *                          a misunderstanding or error in the order of query construction.
+     */
+    private function baseLessThan(string $query, mixed $value): string
+    {
+        // Existance conditions
+        $this->validateWhereStatementFilterOperator('<', $query);
+
+        $oldWhere = $this->where;
+        $newWhere = $this->getNewWhere('<', $value);
+        $query = str_replace($oldWhere, $newWhere, $query);
+
         return $query;
     }
 }
