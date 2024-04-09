@@ -19,6 +19,8 @@ function main(): void
         ->from('table_one', 'a')
         ->where('a.column_one')
         ->lessThan(5)
+        ->and('a.column_two')
+        ->equalsTo('something')
         ->__toString();
 
     echo $query . PHP_EOL;

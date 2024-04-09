@@ -129,7 +129,7 @@ trait BuilderWhere
         // Existance conditions
         if (! str_contains($query, 'WHERE') || is_null($this->where)) {
             throw new BuilderException(
-                'Operator ' . $comparisonOperator . ' must have a previsou WHERE statemen.',
+                'Comparison Operator ' . $comparisonOperator . ' must have a previsou WHERE statemen.',
                 $this->noPreviousWhereStatementExceptionCode,
             );
         }
@@ -141,9 +141,45 @@ trait BuilderWhere
             );
         }
 
-        $oldWhere = $this->where;
-        $newWhere = $this->where . ' ' . $comparisonOperator . ' ' . (is_string($value) ? ' \'' . $value . '\' ' : $value);
-        $query = str_replace($oldWhere, $newWhere, $query);
+        $query .= (' ' . $comparisonOperator . ' ' . (is_string($value) ? ' \'' . $value . '\' ' : $value));
+
+        return $query;
+    }
+
+    /**
+     * Dynamically applies a logical operator (AND, OR) within an existing WHERE clause of the SQL query.
+     *
+     * This method allows for the extension of the WHERE clause by adding additional conditions using
+     * logical operators ('AND', 'OR'). It ensures the logical integrity of the SQL query by verifying
+     * the presence of an initial WHERE clause and the validity of the column name provided for the new condition.
+     * If these conditions are not met, a BuilderException is thrown with the corresponding error code.
+     *
+     * @param string $query The current SQL query being constructed.
+     * @param string $logicalOperator The logical operator to apply ('AND', 'OR'). Must be validated
+     *                                against a predefined set of allowed logical operators if applicable.
+     * @param string $columnName The column name to be used in the logical operation. Must be non-empty
+     *                           and valid within the context of the database schema.
+     * @return string The updated SQL query including the extended WHERE clause with the applied logical operator.
+     * @throws BuilderException If no previous WHERE clause is found or if the column name is invalid.
+     */
+    private function baseLogicalOperator(string $query, string $logicalOperator, string $columnName): string
+    {
+        // Existance conditions
+        if (! str_contains($query, 'WHERE') || is_null($this->where)) {
+            throw new BuilderException(
+                'Logical Operator ' . $logicalOperator . ' must have a previsou WHERE statemen.',
+                $this->noPreviousWhereStatementExceptionCode,
+            );
+        }
+
+        if (empty($columnName)) {
+            throw new BuilderException(
+                'Invalid ' . $logicalOperator . ' logical operator column name.',
+                $this->invalidColumnNameExceptionCode,
+            );
+        }
+
+        $query .= (' ' . $logicalOperator . ' ' . $columnName);
 
         return $query;
     }

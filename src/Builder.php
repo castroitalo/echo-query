@@ -97,6 +97,27 @@ final class Builder
         return $this;
     }
 
+    public function and(string $columnName): self
+    {
+        $this->query = $this->baseLogicalOperator($this->query, 'AND', $columnName);
+
+        return $this;
+    }
+
+    public function or(string $columnName): self
+    {
+        $this->query = $this->baseLogicalOperator($this->query, 'OR', $columnName);
+
+        return $this;
+    }
+
+    public function not(string $columnName): self
+    {
+        $this->query = $this->baseLogicalOperator($this->query, 'NOT', $columnName);
+
+        return $this;
+    }
+
     public function __toString(): string
     {
         return $this->query;
