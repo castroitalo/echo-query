@@ -10,18 +10,38 @@ use CastroItalo\EchoQuery\Traits\BuilderSelect;
 use CastroItalo\EchoQuery\Traits\BuilderWhere;
 
 /**
+ * Main class to construct SQL queries through a fluent interface.
  *
+ * The Builder class facilitates the construction of SQL queries by providing a fluent interface to
+ * define SELECT, FROM, and WHERE clauses, among other SQL components. It leverages traits to separate
+ * and organize the logic of constructing different parts of a query, promoting code reusability and maintainability.
+ *
+ * @author castroitalo <dev.castro.italo@gmail.com>
  * @package CastroItalo\EchoQuery
  */
 final class Builder
 {
-    // User Builder functionalities
-    use BuilderSelect;
-    use BuilderFrom;
-    use BuilderWhere;
+    use BuilderSelect,
+        BuilderFrom,
+        BuilderWhere;
 
+    /**
+     * Holds the current state of the SQL query being constructed.
+     *
+     * @var string $query The SQL query string in its current form.
+     */
     private string $query = '';
 
+    /**
+     * Initiates or appends a SELECT clause to the query.
+     *
+     * This method takes one or more columns as arguments, each represented as an array where the first element is
+     * the column name and the optional second element is the alias. It constructs or appends a SELECT clause to the
+     * current query based on the input columns.
+     *
+     * @param array ...$columns An array of columns to be selected, optionally including aliases.
+     * @return self Returns $this to enable method chaining.
+     */
     public function select(array ...$columns): self
     {
         $this->query = $this->baseSelect($this->query, $columns);
@@ -29,6 +49,17 @@ final class Builder
         return $this;
     }
 
+    /**
+     * Defines the FROM part of the query with support for subqueries.
+     *
+     * Sets or appends the FROM clause of the query. If the $subQueryFrom parameter is true, treats the $tableName
+     * as a subquery. Otherwise, $tableName is treated as a regular table name. An optional table alias can also be specified.
+     *
+     * @param string $tableName The name of the table or subquery.
+     * @param string|null $tableAlias An optional alias for the table or subquery.
+     * @param bool $subQueryFrom Indicates whether $tableName is a subquery.
+     * @return self Returns $this to enable method chaining.
+     */
     public function from(string $tableName, ?string $tableAlias = null, bool $subQueryFrom = false): self
     {
         if ($subQueryFrom === true) {
@@ -40,6 +71,15 @@ final class Builder
         return $this;
     }
 
+    /**
+     * Starts or extends a WHERE clause with the specified column name.
+     *
+     * Begins or appends a condition to the WHERE clause of the query using the provided column name. The condition
+     * can later be completed with a comparison operator and value through other methods.
+     *
+     * @param string $columnName The column name to use in the WHERE condition.
+     * @return self Returns $this to enable method chaining.
+     */
     public function where(string $columnName): self
     {
         $this->query = $this->baseWhere($this->query, $columnName);
@@ -47,6 +87,12 @@ final class Builder
         return $this;
     }
 
+    /**
+     * Appends an '=' comparison operator and value to the current WHERE clause.
+     *
+     * @param mixed $value The value to compare against.
+     * @return self Returns $this to enable method chaining.
+     */
     public function equalsTo(mixed $value): self
     {
         $this->query = $this->baseComparisonOperator($this->query, '=', $value);
@@ -54,10 +100,18 @@ final class Builder
         return $this;
     }
 
+    /**
+     * Appends a '!=' or '<>' comparison operator and value to the current WHERE clause.
+     *
+     * @param mixed $value The value to compare against.
+     * @param string $notEqualsToOperator The operator to use for the comparison ('!=' by default).
+     * @return self Returns $this to enable method chaining.
+     * @throws BuilderException If an unsupported comparison operator is used.
+     */
     public function notEqualsTo(mixed $value, string $notEqualsToOperator = '!='): self
     {
         // Validate not equals to comparison operator
-        if (! in_array($notEqualsToOperator, ['!=', '<>'])) {
+        if (!in_array($notEqualsToOperator, ['!=', '<>'])) {
             throw new BuilderException(
                 'Invalid ' . $notEqualsToOperator . ' comparison operator',
                 $this->invalidComparisonOperatorExceptionCode,
@@ -69,6 +123,12 @@ final class Builder
         return $this;
     }
 
+    /**
+     * Appends a '<' comparison operator and value to the current WHERE clause.
+     *
+     * @param mixed $value The value to compare against.
+     * @return self Returns $this to enable method chaining.
+     */
     public function lessThan(mixed $value): self
     {
         $this->query = $this->baseComparisonOperator($this->query, '<', $value);
@@ -76,6 +136,12 @@ final class Builder
         return $this;
     }
 
+    /**
+     * Appends a '<=' comparison operator and value to the current WHERE clause.
+     *
+     * @param mixed $value The value to compare against.
+     * @return self Returns $this to enable method chaining.
+     */
     public function lessThanEqualsTo(mixed $value): self
     {
         $this->query = $this->baseComparisonOperator($this->query, '<=', $value);
@@ -83,6 +149,12 @@ final class Builder
         return $this;
     }
 
+    /**
+     * Appends a '>' comparison operator and value to the current WHERE clause.
+     *
+     * @param mixed $value The value to compare against.
+     * @return self Returns $this to enable method chaining.
+     */
     public function greaterThan(mixed $value): self
     {
         $this->query = $this->baseComparisonOperator($this->query, '>', $value);
@@ -90,6 +162,12 @@ final class Builder
         return $this;
     }
 
+    /**
+     * Appends a '>=' comparison operator and value to the current WHERE clause.
+     *
+     * @param mixed $value The value to compare against.
+     * @return self Returns $this to enable method chaining.
+     */
     public function greaterThanEqualsTo(mixed $value): self
     {
         $this->query = $this->baseComparisonOperator($this->query, '>=', $value);
@@ -97,6 +175,15 @@ final class Builder
         return $this;
     }
 
+    /**
+     * Appends logical operators AND and a column name to the WHERE clause.
+     *
+     * These methods allow for the logical extension of WHERE clauses by appending conditions with logical
+     * operators AND followed by column names. This enables complex query conditions to be constructed.
+     *
+     * @param string $columnName The column name to apply the logical operator to.
+     * @return self Returns $this to enable method chaining.
+     */
     public function and(string $columnName): self
     {
         $this->query = $this->baseLogicalOperator($this->query, 'AND', $columnName);
@@ -104,6 +191,15 @@ final class Builder
         return $this;
     }
 
+    /**
+     * Appends logical operators OR and a column name to the WHERE clause.
+     *
+     * These methods allow for the logical extension of WHERE clauses by appending conditions with logical
+     * operators OR followed by column names. This enables complex query conditions to be constructed.
+     *
+     * @param string $columnName The column name to apply the logical operator to.
+     * @return self Returns $this to enable method chaining.
+     */
     public function or(string $columnName): self
     {
         $this->query = $this->baseLogicalOperator($this->query, 'OR', $columnName);
@@ -111,6 +207,15 @@ final class Builder
         return $this;
     }
 
+    /**
+     * Appends logical operators NOT and a column name to the WHERE clause.
+     *
+     * These methods allow for the logical extension of WHERE clauses by appending conditions with logical
+     * operators NOT followed by column names. This enables complex query conditions to be constructed.
+     *
+     * @param string $columnName The column name to apply the logical operator to.
+     * @return self Returns $this to enable method chaining.
+     */
     public function not(string $columnName): self
     {
         $this->query = $this->baseLogicalOperator($this->query, 'NOT', $columnName);
@@ -118,6 +223,14 @@ final class Builder
         return $this;
     }
 
+    /**
+     * Converts the built query to a string.
+     *
+     * This method allows the Builder instance to be used directly in contexts expecting a string,
+     * returning the SQL query string that has been constructed.
+     *
+     * @return string The constructed SQL query.
+     */
     public function __toString(): string
     {
         return $this->query;
