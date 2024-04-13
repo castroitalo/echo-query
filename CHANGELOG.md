@@ -5,7 +5,7 @@ All notable changes to `EchoQuery` will be documented in this file.
 ## Last update 13-04-2024
 
 ### Added
-- Where statement patten matching done
+- Where statement range conditions done
 
 ### Deprecated
 - Nothing
