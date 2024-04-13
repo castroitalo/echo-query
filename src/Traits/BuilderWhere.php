@@ -73,6 +73,8 @@ trait BuilderWhere
      */
     private int $invalidComparisonOperatorExceptionCode = BuilderExceptionsCode::InvalidComparisonOperator->value;
 
+    private int $invalidPattern = BuilderExceptionsCode::InvalidPattern->value;
+
     /**
      * Constructs a WHERE clause for an SQL query based on the provided column name.
      *
@@ -180,6 +182,43 @@ trait BuilderWhere
         }
 
         $query .= (' ' . $logicalOperator . ' ' . $columnName);
+
+        return $query;
+    }
+
+    /**
+     * Dynamically applies a pattern matching operator within an existing WHERE clause of the SQL query.
+     *
+     * This method extends the WHERE clause by incorporating a specified pattern matching operator and pattern,
+     * such as LIKE or NOT LIKE. It ensures the WHERE clause construction adheres to SQL syntax rules and checks
+     * for the presence of a WHERE clause before modification. If these conditions are not met, a BuilderException
+     * is thrown with the appropriate error code. The method also validates that the provided pattern is non-empty.
+     *
+     * @param string $query The current SQL query being constructed.
+     * @param string $patternMatchingOperator The pattern matching operator to apply (e.g., 'LIKE', 'NOT LIKE').
+     * @param string $pattern The pattern to match against, which must not be empty.
+     * @return string The updated SQL query including the extended WHERE clause with the applied pattern matching.
+     * @throws BuilderException If no previous WHERE clause is found, if the pattern is empty, or if there's another
+     *                          issue with pattern matching logic.
+     */
+    private function basePatternMatching(string $query, string $patternMatchingOperator, string $pattern): string
+    {
+        // Existance conditions
+        if (! str_contains($query, 'WHERE') || is_null($this->where)) {
+            throw new BuilderException(
+                'Pattern matching ' . $patternMatchingOperator . ' must have a previous WHERE statement.',
+                $this->noPreviousWhereStatementExceptionCode,
+            );
+        }
+
+        if (empty($pattern)) {
+            throw new BuilderException(
+                'Invalid pattern matching pattern.',
+                $this->invalidPattern,
+            );
+        }
+
+        $query .= ' ' . $patternMatchingOperator . ' \'' . $pattern . '\' ';
 
         return $query;
     }

@@ -21,6 +21,8 @@ function main(): void
         ->lessThan(5)
         ->and('a.column_two')
         ->equalsTo('something')
+        ->or('column_two')
+        ->notLike('%something%')
         ->__toString();
 
     echo $query . PHP_EOL;

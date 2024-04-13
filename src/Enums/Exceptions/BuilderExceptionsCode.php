@@ -91,4 +91,6 @@ enum BuilderExceptionsCode: int
      * to this error, promoting the use of correct syntax and logical operator application in query conditions.
      */
     case InvalidComparisonOperator = 1007;
+
+    case InvalidPattern = 1008;
 }

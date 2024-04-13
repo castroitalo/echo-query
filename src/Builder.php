@@ -21,9 +21,9 @@ use CastroItalo\EchoQuery\Traits\BuilderWhere;
  */
 final class Builder
 {
-    use BuilderSelect,
-        BuilderFrom,
-        BuilderWhere;
+    use BuilderSelect;
+    use BuilderFrom;
+    use BuilderWhere;
 
     /**
      * Holds the current state of the SQL query being constructed.
@@ -111,7 +111,7 @@ final class Builder
     public function notEqualsTo(mixed $value, string $notEqualsToOperator = '!='): self
     {
         // Validate not equals to comparison operator
-        if (!in_array($notEqualsToOperator, ['!=', '<>'])) {
+        if (! in_array($notEqualsToOperator, ['!=', '<>'])) {
             throw new BuilderException(
                 'Invalid ' . $notEqualsToOperator . ' comparison operator',
                 $this->invalidComparisonOperatorExceptionCode,
@@ -219,6 +219,20 @@ final class Builder
     public function not(string $columnName): self
     {
         $this->query = $this->baseLogicalOperator($this->query, 'NOT', $columnName);
+
+        return $this;
+    }
+
+    public function like(string $pattern): self
+    {
+        $this->query = $this->basePatternMatching($this->query, 'LIKE', $pattern);
+
+        return $this;
+    }
+
+    public function notLike(string $pattern): self
+    {
+        $this->query = $this->basePatternMatching($this->query, 'NOT LIKE', $pattern);
 
         return $this;
     }

@@ -358,4 +358,110 @@ final class BuilderWhereTest extends TestCase
             ->notEqualsTo('something')
             ->__toString();
     }
+
+    /**
+     * Tests the Builder's capability to correctly apply pattern matching operators like 'LIKE' in WHERE clauses.
+     *
+     * Verifies the proper functionality of the Builder's ability to use 'LIKE' in constructing SQL queries.
+     * The test constructs a query using the Builder, appends a WHERE clause with a 'LIKE' condition, and
+     * asserts that the resulting SQL string is correctly formatted and matches the expected output. This test
+     * ensures that the Builder handles SQL pattern matching accurately, reflecting the specified pattern in the query.
+     *
+     * @return void
+     * @throws ExpectationFailedException If the actual SQL query does not match the expected format.
+     */
+    public function testWhereStatementPatternMatchingLike(): void
+    {
+        $actual = $this->builder->select(
+            ['column_one', 'co'],
+            ['column_two', 'ct'],
+        )
+            ->from('table_one', 'to')
+            ->where('column_one')
+            ->like('%something')
+            ->__toString();
+        $expect = 'SELECT column_one AS co, column_two AS ct' .
+            'FROM table_one AS to' .
+            'WHERE column_one LIKE \'%something\'';
+
+        $this->assertEquals(
+            str_replace(' ', '', $expect),
+            str_replace(' ', '', $actual),
+        );
+    }
+
+    /**
+     * Tests the Builder's handling of the 'NOT LIKE' pattern matching operator in WHERE clauses.
+     *
+     * This test checks the Builder's capability to incorporate the 'NOT LIKE' operator into the WHERE clause,
+     * constructing an SQL query to reflect this condition. It confirms that the Builder accurately interprets
+     * and applies the 'NOT LIKE' operator, producing an SQL string that matches the expected format and correctly
+     * incorporates the specified pattern.
+     *
+     * @return void
+     * @throws ExpectationFailedException If the generated SQL does not match the expected output.
+     */
+    public function testWhereStatementPatternMatchingNotLike(): void
+    {
+        $actual = $this->builder->select(
+            ['column_one', 'co'],
+            ['column_two', 'ct'],
+        )
+            ->from('table_one', 'to')
+            ->where('column_one')
+            ->notLike('%something')
+            ->__toString();
+        $expect = 'SELECT column_one AS co, column_two AS ct' .
+            'FROM table_one AS to' .
+            'WHERE column_one NOT LIKE \'%something\'';
+
+        $this->assertEquals(
+            str_replace(' ', '', $expect),
+            str_replace(' ', '', $actual),
+        );
+    }
+
+    /**
+     * Tests the exception handling when a pattern matching operator is used without a preceding WHERE clause.
+     *
+     * Verifies that the Builder class enforces correct SQL query structure by throwing a BuilderException
+     * when a pattern matching operator such as 'LIKE' is used without first defining a WHERE clause. This test
+     * emphasizes the importance of logical sequence in SQL query construction, ensuring that a WHERE clause
+     * must precede the use of pattern matching operators to maintain query validity and prevent execution errors.
+     *
+     * @return void
+     * @throws BuilderException If a pattern matching operator is invoked without a preceding WHERE clause.
+     */
+    public function testWhereStatementPatternMatchingNoPreviousWhereStatementException(): void
+    {
+        $this->expectException(BuilderException::class);
+        $this->expectExceptionCode(BuilderExceptionsCode::NoPreviousWhereStatement->value);
+        $this->expectExceptionMessage('Pattern matching LIKE must have a previous WHERE statement.');
+        $this->builder->like('%pattern%');
+    }
+
+    /**
+     * Tests exception handling for invalid patterns in pattern matching operations.
+     *
+     * Ensures that providing an invalid (e.g., empty) pattern to a pattern matching operator within a WHERE clause
+     * results in a BuilderException. This test checks the Builder class's validation of patterns, expecting an error
+     * code and message that indicate an invalid pattern for the pattern matching operation. It confirms the Builder's
+     * robust error handling and its adherence to SQL syntax rules in the context of pattern matching.
+     *
+     * @return void
+     * @throws BuilderException If an invalid pattern is provided for a pattern matching operator in a WHERE clause.
+     */
+    public function testWhereStatementPatternMatchingInvalidPatternException(): void
+    {
+        $this->expectException(BuilderException::class);
+        $this->expectExceptionCode(BuilderExceptionsCode::InvalidPattern->value);
+        $this->expectExceptionMessage('Invalid pattern matching pattern.');
+        $this->builder->select(
+            ['column_one', 'co'],
+            ['column_two', 'ct'],
+        )
+            ->from('table_one', 'to')
+            ->where('column_one')
+            ->like('');
+    }
 }
