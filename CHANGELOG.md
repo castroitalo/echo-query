@@ -5,7 +5,7 @@ All notable changes to `EchoQuery` will be documented in this file.
 ## Last update 13-04-2024
 
 ### Added
-- Where statement list conditions done
+- Where statement null conditions done
 
 ### Deprecated
 - Nothing
