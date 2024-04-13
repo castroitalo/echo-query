@@ -19,7 +19,7 @@ function main(): void
     )
         ->from('table_one', 'a')
         ->where('a.column_one')
-        ->notIn(['value_one', 2, 'value_three', 4])
+        ->isNotNull()
         ->__toString();
 
     echo $query . PHP_EOL;

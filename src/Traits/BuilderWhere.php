@@ -102,7 +102,7 @@ trait BuilderWhere
     private function baseWhere(string $query, string $columnName): string
     {
         // Exitance conditions
-        if (! str_contains($query, 'SELECT')) {
+        if (!str_contains($query, 'SELECT')) {
             throw new BuilderException(
                 'No previous SELECT statement.',
                 $this->noPreviousSelectStatementExceptionCode,
@@ -139,14 +139,14 @@ trait BuilderWhere
     private function baseComparisonOperator(string $query, string $comparisonOperator, mixed $value): string
     {
         // Existance conditions
-        if (! str_contains($query, 'WHERE') || is_null($this->where)) {
+        if (!str_contains($query, 'WHERE') || is_null($this->where)) {
             throw new BuilderException(
                 'Comparison Operator ' . $comparisonOperator . ' must have a previsou WHERE statemen.',
                 $this->noPreviousWhereStatementExceptionCode,
             );
         }
 
-        if (! in_array($comparisonOperator, self::AVALIABLE_COMPARISON_OPERATORS)) {
+        if (!in_array($comparisonOperator, self::AVALIABLE_COMPARISON_OPERATORS)) {
             throw new BuilderException(
                 'Invalid ' . $comparisonOperator . ' comparison operator',
                 $this->invalidComparisonOperatorExceptionCode,
@@ -177,7 +177,7 @@ trait BuilderWhere
     private function baseLogicalOperator(string $query, string $logicalOperator, string $columnName): string
     {
         // Existance conditions
-        if (! str_contains($query, 'WHERE') || is_null($this->where)) {
+        if (!str_contains($query, 'WHERE') || is_null($this->where)) {
             throw new BuilderException(
                 'Logical Operator ' . $logicalOperator . ' must have a previsou WHERE statemen.',
                 $this->noPreviousWhereStatementExceptionCode,
@@ -214,7 +214,7 @@ trait BuilderWhere
     private function basePatternMatching(string $query, string $patternMatchingOperator, string $pattern): string
     {
         // Existance conditions
-        if (! str_contains($query, 'WHERE') || is_null($this->where)) {
+        if (!str_contains($query, 'WHERE') || is_null($this->where)) {
             throw new BuilderException(
                 'Pattern matching ' . $patternMatchingOperator . ' must have a previous WHERE statement.',
                 $this->noPreviousWhereStatementExceptionCode,
@@ -252,7 +252,7 @@ trait BuilderWhere
     private function baseRangeCondition(string $query, string $rangeCondition, mixed $start, mixed $end): string
     {
         // Existance conditions
-        if (! str_contains($query, 'WHERE') || is_null($this->where)) {
+        if (!str_contains($query, 'WHERE') || is_null($this->where)) {
             throw new BuilderException(
                 'Range condition ' . $rangeCondition . ' must have a previous WHERE statement',
                 $this->noPreviousWhereStatementExceptionCode,
@@ -281,10 +281,10 @@ trait BuilderWhere
      * @throws BuilderException If no previous WHERE clause is found, if the list is empty, or if another
      *                          issue arises with list condition logic.
      */
-    public function baseListcondition(string $query, string $listCondition, array $list): string
+    private function baseListcondition(string $query, string $listCondition, array $list): string
     {
         // Existance conditions
-        if (! str_contains($query, 'WHERE') || is_null($this->where)) {
+        if (!str_contains($query, 'WHERE') || is_null($this->where)) {
             throw new BuilderException(
                 'List condition ' . $listCondition . ' must have a previous WHERE statement',
                 $this->noPreviousWhereStatementExceptionCode,
@@ -308,6 +308,32 @@ trait BuilderWhere
         }
 
         $query .= ' ' . $listCondition . ' ' . $listValue;
+
+        return $query;
+    }
+
+    /**
+     * Applies a null condition ('IS NULL' or 'IS NOT NULL') within an existing WHERE clause of the SQL query.
+     *
+     * This method extends the WHERE clause to include a null condition check. It validates the presence
+     * of a WHERE clause before modifying the query, throwing an exception for any discrepancies.
+     *
+     * @param string $query The current SQL query being constructed.
+     * @param string $nullCondition The null condition operator to apply ('IS NULL' or 'IS NOT NULL').
+     * @return string The updated SQL query including the extended WHERE clause with the new null condition.
+     * @throws BuilderException If no previous WHERE clause is found or if there's another issue with null condition logic.
+     */
+    public function baseNullConditions(string $query, string $nullCondition): string
+    {
+        // Existance conditions
+        if (!str_contains($query, 'WHERE') || is_null($this->where)) {
+            throw new BuilderException(
+                'Null condition ' . $nullCondition . ' must have a previous WHERE statement',
+                $this->noPreviousWhereStatementExceptionCode,
+            );
+        }
+
+        $query .= ' ' . $nullCondition . ' ';
 
         return $query;
     }

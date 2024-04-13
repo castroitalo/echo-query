@@ -623,4 +623,82 @@ final class BuilderWhereTest extends TestCase
         $this->expectExceptionMessage('List condition IN must have a previous WHERE statement');
         $this->builder->in(['value_one', 2, 'value_three']);
     }
+
+    /**
+     * Tests the correct application of the 'IS NULL' condition within a WHERE clause.
+     *
+     * Verifies the Builder's ability to apply the 'IS NULL' condition accurately, ensuring
+     * that the column specified evaluates to NULL. The resulting SQL query string is
+     * examined to ensure it is correctly formatted according to expectations.
+     *
+     * @return void
+     * @throws ExpectationFailedException If the actual SQL query does not match the expected format.
+     */
+    public function testWhereStatementNullConditionsIsNull(): void
+    {
+        $actual = $this->builder->select(
+            ['column_one', 'co'],
+            ['column_two', 'ct']
+        )
+            ->from('table_one', 'to')
+            ->where('column_one')
+            ->isNull()
+            ->__toString();
+        $expect = ' SELECT column_one AS co, column_two AS ct ' .
+            ' FROM table_one AS to ' .
+            ' WHERE column_one IS NULL ';
+
+        $this->assertEquals(
+            str_replace(' ', '', $expect),
+            str_replace(' ', '', $actual),
+        );
+    }
+
+    /**
+     * Tests the correct application of the 'IS NOT NULL' condition within a WHERE clause.
+     *
+     * Checks the Builder's functionality in applying the 'IS NOT NULL' condition, ensuring
+     * that the specified column does not evaluate to NULL. The SQL query generated is
+     * validated against expected results to confirm proper syntax and condition application.
+     *
+     * @return void
+     * @throws ExpectationFailedException If the generated SQL does not match the expected output.
+     */
+    public function testWhereStatementNullConditionsIsNotNull(): void
+    {
+        $actual = $this->builder->select(
+            ['column_one', 'co'],
+            ['column_two', 'ct']
+        )
+            ->from('table_one', 'to')
+            ->where('column_one')
+            ->isNotNull()
+            ->__toString();
+        $expect = ' SELECT column_one AS co, column_two AS ct ' .
+            ' FROM table_one AS to ' .
+            ' WHERE column_one IS NOT NULL ';
+
+        $this->assertEquals(
+            str_replace(' ', '', $expect),
+            str_replace(' ', '', $actual),
+        );
+    }
+
+    /**
+     * Tests the exception handling when a 'IS NULL' condition is used without a preceding WHERE clause.
+     *
+     * Verifies that the Builder class throws an appropriate BuilderException when attempting to
+     * apply a 'IS NULL' condition without first defining a WHERE clause. The test ensures that
+     * SQL syntax and query structure rules are enforced, maintaining logical query construction.
+     *
+     * @return void
+     * @throws BuilderException If the null condition is invoked without a preceding WHERE clause.
+     */
+    public function testWhereStatementNullConditionNoPreviousWhereException(): void
+    {
+        $this->expectException(BuilderException::class);
+        $this->expectExceptionCode(BuilderExceptionsCode::NoPreviousWhereStatement->value);
+        $this->expectExceptionMessage('Null condition IS NULL must have a previous WHERE statement');
+        $this->builder->isNull();
+    }
 }

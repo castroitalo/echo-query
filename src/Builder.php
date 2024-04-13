@@ -111,7 +111,7 @@ final class Builder
     public function notEqualsTo(mixed $value, string $notEqualsToOperator = '!='): self
     {
         // Validate not equals to comparison operator
-        if (! in_array($notEqualsToOperator, ['!=', '<>'])) {
+        if (!in_array($notEqualsToOperator, ['!=', '<>'])) {
             throw new BuilderException(
                 'Invalid ' . $notEqualsToOperator . ' comparison operator',
                 $this->invalidComparisonOperatorExceptionCode,
@@ -318,6 +318,36 @@ final class Builder
     public function notIn(array $list): self
     {
         $this->query = $this->baseListcondition($this->query, 'NOT IN', $list);
+
+        return $this;
+    }
+
+    /**
+     * Appends an 'IS NULL' condition to the WHERE clause.
+     *
+     * This method extends the WHERE clause by adding an 'IS NULL' condition to check if a column's value is null.
+     * It is a crucial feature for filtering SQL queries based on null values in the database.
+     *
+     * @return self Returns $this to enable method chaining.
+     */
+    public function isNull(): self
+    {
+        $this->query = $this->baseNullConditions($this->query, 'IS NULL');
+
+        return $this;
+    }
+
+    /**
+     * Appends an 'IS NOT NULL' condition to the WHERE clause.
+     *
+     * This method extends the WHERE clause by adding an 'IS NOT NULL' condition to ensure a column's value is not null.
+     * This condition is essential for filtering SQL queries to exclude null values and ensure data integrity.
+     *
+     * @return self Returns $this to enable method chaining.
+     */
+    public function isNotNull(): self
+    {
+        $this->query = $this->baseNullConditions($this->query, 'IS NOT NULL');
 
         return $this;
     }
