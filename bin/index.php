@@ -14,15 +14,14 @@ function main(): void
 {
     $query = (new Builder())->select(
         ['a.column_one', 'co'],
-        ['a.column_two', 'ct']
+        ['a.column_two', 'ct'],
+        ['a.column_three', 'cth']
     )
         ->from('table_one', 'a')
         ->where('a.column_one')
-        ->lessThan(5)
-        ->and('a.column_two')
-        ->equalsTo('something')
-        ->or('column_two')
-        ->notLike('%something%')
+        ->between('2024-05-04', '2024-05-04')
+        ->or('a.column_two')
+        ->notBetween(10, 30)
         ->__toString();
 
     echo $query . PHP_EOL;

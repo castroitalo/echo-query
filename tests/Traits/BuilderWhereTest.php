@@ -464,4 +464,84 @@ final class BuilderWhereTest extends TestCase
             ->where('column_one')
             ->like('');
     }
+
+    /**
+     * Tests the application of the 'BETWEEN' condition within a WHERE clause.
+     *
+     * This test assesses the Builder's functionality to apply a 'BETWEEN' condition, ensuring that
+     * it correctly asserts the column's value lies within a specified range. It constructs a query
+     * incorporating this condition and checks if the generated SQL matches the expected structure
+     * and content.
+     *
+     * @return void
+     * @throws ExpectationFailedException If the SQL generated does not conform to expectations.
+     */
+    public function testWhereStatementRangeConditionBetween(): void
+    {
+        $actual = $this->builder->select(
+            ['column_one', 'co'],
+            ['column_two', 'ct'],
+        )
+            ->from('table_one', 'to')
+            ->where('column_one')
+            ->between(1, 10)
+            ->__toString();
+        $expect = ' SELECT column_one AS co, column_two AS ct ' .
+            ' FROM table_one AS to ' .
+            ' WHERE column_one BETWEEN 1 AND 10 ';
+
+        $this->assertEquals(
+            str_replace(' ', '', $expect),
+            str_replace(' ', '', $actual),
+        );
+    }
+
+    /**
+     * Tests the application of the 'NOT BETWEEN' condition within a WHERE clause.
+     *
+     * This test assesses the Builder's functionality to apply a 'BETWEEN' condition, ensuring that
+     * it correctly asserts the column's value lies within a specified range. It constructs a query
+     * incorporating this condition and checks if the generated SQL matches the expected structure
+     * and content.
+     *
+     * @return void
+     * @throws ExpectationFailedException If the SQL generated does not conform to expectations.
+     */
+    public function testWhereStatementRangeConditionNotBetween(): void
+    {
+        $actual = $this->builder->select(
+            ['column_one', 'co'],
+            ['column_two', 'ct'],
+        )
+            ->from('table_one', 'to')
+            ->where('column_one')
+            ->notBetween(1, 10)
+            ->__toString();
+        $expect = ' SELECT column_one AS co, column_two AS ct ' .
+            ' FROM table_one AS to ' .
+            ' WHERE column_one NOT BETWEEN 1 AND 10 ';
+
+        $this->assertEquals(
+            str_replace(' ', '', $expect),
+            str_replace(' ', '', $actual),
+        );
+    }
+
+    /**
+     * Tests exception handling when a range condition is used without a preceding WHERE clause.
+     *
+     * Verifies that attempting to apply a range condition such as 'BETWEEN' without a prior WHERE clause
+     * throws a BuilderException, reflecting strict enforcement of SQL syntax rules by the Builder class.
+     * The test ensures that logical order is maintained in SQL query construction.
+     *
+     * @return void
+     * @throws BuilderException If the range condition is applied without a preceding WHERE clause.
+     */
+    public function testWhereStatementRangeConditionNoPreviousWhereStatementException(): void
+    {
+        $this->expectException(BuilderException::class);
+        $this->expectExceptionCode(BuilderExceptionsCode::NoPreviousWhereStatement->value);
+        $this->expectExceptionMessage('Range condition BETWEEN must have a previous WHERE statement');
+        $this->builder->between(1, 10);
+    }
 }

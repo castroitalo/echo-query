@@ -73,6 +73,16 @@ trait BuilderWhere
      */
     private int $invalidComparisonOperatorExceptionCode = BuilderExceptionsCode::InvalidComparisonOperator->value;
 
+    /**
+     * The error code for when an invalid pattern is used in a pattern matching operation.
+     *
+     * This error code is triggered when a pattern provided for a pattern matching operation (e.g., LIKE, NOT LIKE)
+     * is found to be invalid or empty. This validation ensures that the SQL pattern matching operation does not
+     * run with malformed or potentially harmful input, thus maintaining the integrity and security of the database
+     * interaction.
+     *
+     * @var int $invalidPattern Error code indicating an invalid pattern for pattern matching operations.
+     */
     private int $invalidPattern = BuilderExceptionsCode::InvalidPattern->value;
 
     /**
@@ -219,6 +229,39 @@ trait BuilderWhere
         }
 
         $query .= ' ' . $patternMatchingOperator . ' \'' . $pattern . '\' ';
+
+        return $query;
+    }
+
+    /**
+     * Applies a range condition within an existing WHERE clause of the SQL query.
+     *
+     * This method extends the WHERE clause to include a range condition, typically used with 'BETWEEN' or
+     * similar operators. It adds a condition that checks if a value lies within a specified start and end range.
+     * Before modifying the query, it checks for the existence of a previous WHERE clause and validates that both
+     * start and end values are specified. If these conditions are not met, a BuilderException is thrown with the
+     * corresponding error code.
+     *
+     * @param string $query The current SQL query being constructed.
+     * @param string $rangeCondition The range condition operator to apply (e.g., 'BETWEEN').
+     * @param mixed $start The start value of the range.
+     * @param mixed $end The end value of the range.
+     * @return string The updated SQL query including the extended WHERE clause with the new range condition.
+     * @throws BuilderException If no previous WHERE clause is found, or if the start or end values are not properly specified.
+     */
+    public function baseRangeCondition(string $query, string $rangeCondition, mixed $start, mixed $end): string
+    {
+        // Existance conditions
+        if (! str_contains($query, 'WHERE') || is_null($this->where)) {
+            throw new BuilderException(
+                'Range condition ' . $rangeCondition . ' must have a previous WHERE statement',
+                $this->noPreviousWhereStatementExceptionCode,
+            );
+        }
+
+        $startValue = is_string($start) ? '\'' . $start . '\'' : $start;
+        $endValue = is_string($end) ? '\'' . $end . '\'' : $end;
+        $query .= ' ' . $rangeCondition . ' ' . $startValue . ' AND ' . $endValue . ' ';
 
         return $query;
     }

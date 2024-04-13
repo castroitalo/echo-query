@@ -92,5 +92,13 @@ enum BuilderExceptionsCode: int
      */
     case InvalidComparisonOperator = 1007;
 
+    /**
+     * Indicates the use of an invalid pattern in SQL pattern matching operations such as LIKE or NOT LIKE.
+     *
+     * This exception code is used when a pattern provided for a pattern matching operation is found to be
+     * syntactically incorrect, empty, or otherwise unsuitable for the intended database operation. This check
+     * ensures that pattern matching operations are executed with valid and well-formed patterns, avoiding errors
+     * in query execution and potential security vulnerabilities.
+     */
     case InvalidPattern = 1008;
 }

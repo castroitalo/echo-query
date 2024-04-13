@@ -223,6 +223,15 @@ final class Builder
         return $this;
     }
 
+    /**
+     * Appends a 'LIKE' pattern matching condition to the WHERE clause.
+     *
+     * This method extends the WHERE clause by adding a 'LIKE' pattern matching condition to the query.
+     * It allows for matching parts of a column against a specified pattern.
+     *
+     * @param string $pattern The pattern to match against.
+     * @return self Returns $this to enable method chaining.
+     */
     public function like(string $pattern): self
     {
         $this->query = $this->basePatternMatching($this->query, 'LIKE', $pattern);
@@ -230,9 +239,52 @@ final class Builder
         return $this;
     }
 
+    /**
+     * Appends a 'NOT LIKE' pattern matching condition to the WHERE clause.
+     *
+     * This method extends the WHERE clause by adding a 'NOT LIKE' pattern matching condition to the query.
+     * It allows for specifying parts of a column that should not match a given pattern.
+     *
+     * @param string $pattern The pattern to exclude in matches.
+     * @return self Returns $this to enable method chaining.
+     */
     public function notLike(string $pattern): self
     {
         $this->query = $this->basePatternMatching($this->query, 'NOT LIKE', $pattern);
+
+        return $this;
+    }
+
+    /**
+     * Appends a 'BETWEEN' range condition to the WHERE clause.
+     *
+     * This method extends the WHERE clause by adding a 'BETWEEN' condition, specifying that a column's value
+     * must lie within a specified range, inclusive of the boundary values.
+     *
+     * @param mixed $start The lower boundary of the range.
+     * @param mixed $end The upper boundary of the range.
+     * @return self Returns $this to enable method chaining.
+     */
+    public function between(mixed $start, mixed $end): self
+    {
+        $this->query = $this->baseRangeCondition($this->query, 'BETWEEN', $start, $end);
+
+        return $this;
+    }
+
+    /**
+     * Appends a 'NOT BETWEEN' range condition to the WHERE clause.
+     *
+     * This method extends the WHERE clause by adding a 'NOT BETWEEN' condition, specifying that a column's value
+     * must not lie within a specified range, exclusive of the boundary values.
+     *
+     * @param mixed $start The lower boundary of the range.
+     * @param mixed $end The upper boundary of the range.
+     * @return self Returns $this to enable method chaining.
+     */
+    public function notBetween(mixed $start, mixed $end): self
+    {
+        $this->query = $this->baseRangeCondition($this->query, 'NOT BETWEEN', $start, $end);
 
         return $this;
     }
