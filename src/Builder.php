@@ -290,6 +290,39 @@ final class Builder
     }
 
     /**
+     * Appends an 'IN' list condition to the WHERE clause.
+     *
+     * This method extends the WHERE clause by adding an 'IN' condition to check if a column's value is within a specified list.
+     * It enables the specification of multiple acceptable values for a single column, enhancing the flexibility of the query.
+     *
+     * @param array $list An array of values that the column can match.
+     * @return self Returns $this to enable method chaining.
+     */
+    public function in(array $list): self
+    {
+        $this->query = $this->baseListcondition($this->query, 'IN', $list);
+
+        return $this;
+    }
+
+
+    /**
+     * Appends a 'NOT IN' list condition to the WHERE clause.
+     *
+     * This method extends the WHERE clause by adding a 'NOT IN' condition to exclude a column's values from a specified list.
+     * It allows for excluding multiple specific values from the results, which can be particularly useful in filtering operations.
+     *
+     * @param array $list An array of values that the column should not match.
+     * @return self Returns $this to enable method chaining.
+     */
+    public function notIn(array $list): self
+    {
+        $this->query = $this->baseListcondition($this->query, 'NOT IN', $list);
+
+        return $this;
+    }
+
+    /**
      * Converts the built query to a string.
      *
      * This method allows the Builder instance to be used directly in contexts expecting a string,

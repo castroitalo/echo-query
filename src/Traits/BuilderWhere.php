@@ -249,7 +249,7 @@ trait BuilderWhere
      * @return string The updated SQL query including the extended WHERE clause with the new range condition.
      * @throws BuilderException If no previous WHERE clause is found, or if the start or end values are not properly specified.
      */
-    public function baseRangeCondition(string $query, string $rangeCondition, mixed $start, mixed $end): string
+    private function baseRangeCondition(string $query, string $rangeCondition, mixed $start, mixed $end): string
     {
         // Existance conditions
         if (! str_contains($query, 'WHERE') || is_null($this->where)) {
@@ -262,6 +262,52 @@ trait BuilderWhere
         $startValue = is_string($start) ? '\'' . $start . '\'' : $start;
         $endValue = is_string($end) ? '\'' . $end . '\'' : $end;
         $query .= ' ' . $rangeCondition . ' ' . $startValue . ' AND ' . $endValue . ' ';
+
+        return $query;
+    }
+
+    /**
+     * Dynamically applies a list condition within an existing WHERE clause of the SQL query.
+     *
+     * This method extends the WHERE clause by incorporating a specified list condition operator (e.g., 'IN', 'NOT IN')
+     * and a list of values, which must be non-empty. The method constructs a condition that checks if a column's value
+     * is included or excluded from the specified list. It ensures the logical integrity of the SQL query by verifying
+     * the presence of an initial WHERE clause and the non-emptiness of the list before modifying the query.
+     *
+     * @param string $query The current SQL query being constructed.
+     * @param string $listCondition The list condition operator to apply ('IN', 'NOT IN').
+     * @param array $list The array of values to include in the list condition.
+     * @return string The updated SQL query including the extended WHERE clause with the applied list condition.
+     * @throws BuilderException If no previous WHERE clause is found, if the list is empty, or if another
+     *                          issue arises with list condition logic.
+     */
+    public function baseListcondition(string $query, string $listCondition, array $list): string
+    {
+        // Existance conditions
+        if (! str_contains($query, 'WHERE') || is_null($this->where)) {
+            throw new BuilderException(
+                'List condition ' . $listCondition . ' must have a previous WHERE statement',
+                $this->noPreviousWhereStatementExceptionCode,
+            );
+        }
+
+        $listValue = ' (';
+        $listCounter = 1;
+
+        foreach ($list as $element) {
+            $value = is_string($element) ? ' \'' . $element . '\' ' : $element;
+
+            if (($listCounter + 1) > sizeof($list)) {
+                $listValue .= ' ' . $value . ' ) ';
+
+                break;
+            }
+
+            $listValue .= ' ' . $value . ', ';
+            $listCounter += 1;
+        }
+
+        $query .= ' ' . $listCondition . ' ' . $listValue;
 
         return $query;
     }

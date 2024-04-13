@@ -19,9 +19,7 @@ function main(): void
     )
         ->from('table_one', 'a')
         ->where('a.column_one')
-        ->between('2024-05-04', '2024-05-04')
-        ->or('a.column_two')
-        ->notBetween(10, 30)
+        ->notIn(['value_one', 2, 'value_three', 4])
         ->__toString();
 
     echo $query . PHP_EOL;

@@ -544,4 +544,83 @@ final class BuilderWhereTest extends TestCase
         $this->expectExceptionMessage('Range condition BETWEEN must have a previous WHERE statement');
         $this->builder->between(1, 10);
     }
+
+    /**
+     * Tests the Builder's capability to apply the 'IN' list condition correctly in WHERE clauses.
+     *
+     * This test verifies the Builder's functionality in handling 'IN' conditions, ensuring it correctly
+     * constructs a part of the WHERE clause that includes a list of values the column can match.
+     * It builds an SQL query using the Builder, applies an 'IN' condition, and asserts that the
+     * generated SQL string correctly reflects the condition with expected values.
+     *
+     * @return void
+     * @throws ExpectationFailedException If the generated SQL does not conform to expectations.
+     */
+    public function testWhereStatementListConditionIn(): void
+    {
+        $actual = $this->builder->select(
+            ['column_one', 'co'],
+            ['column_two', 'ct'],
+        )
+            ->from('table_one', 'to')
+            ->where('column_one')
+            ->in(['value_one', 2, 'value_three'])
+            ->__toString();
+        $expect = ' SELECT column_one AS co, column_two AS ct ' .
+            ' FROM table_one AS to ' .
+            ' WHERE column_one IN (\'value_one\', 2, \'value_three\') ';
+
+        $this->assertEquals(
+            str_replace(' ', '', $expect),
+            str_replace(' ', '', $actual),
+        );
+    }
+
+    /**
+     * Tests the Builder's handling of the 'NOT IN' list condition in WHERE clauses.
+     *
+     * This test checks the Builder's capability to apply a 'NOT IN' condition correctly, ensuring that
+     * it excludes specified values from the results accurately. The query is constructed to include a 'NOT IN'
+     * condition and is then compared to the expected SQL string to verify correct syntax and logic.
+     *
+     * @return void
+     * @throws ExpectationFailedException If the generated SQL does not match the expected output.
+     */
+    public function testWhereStatementListConditionNotInt(): void
+    {
+        $actual = $this->builder->select(
+            ['column_one', 'co'],
+            ['column_two', 'ct'],
+        )
+            ->from('table_one', 'to')
+            ->where('column_one')
+            ->notIn(['value_one', 2, 'value_three'])
+            ->__toString();
+        $expect = ' SELECT column_one AS co, column_two AS ct ' .
+            ' FROM table_one AS to ' .
+            ' WHERE column_one NOT IN (\'value_one\', 2, \'value_three\') ';
+
+        $this->assertEquals(
+            str_replace(' ', '', $expect),
+            str_replace(' ', '', $actual),
+        );
+    }
+
+    /**
+     * Tests the exception handling when a list condition is used without a preceding WHERE clause.
+     *
+     * Verifies that the Builder class throws a BuilderException when an 'IN' list condition is attempted
+     * without a prior WHERE clause. This test underscores the importance of adhering to SQL syntax rules,
+     * ensuring that logical conditions are applied in the correct order.
+     *
+     * @return void
+     * @throws BuilderException If the list condition is applied without a preceding WHERE clause.
+     */
+    public function testWhereStatementListConditionNoPreviosuWhereStatementException(): void
+    {
+        $this->expectException(BuilderException::class);
+        $this->expectExceptionCode(BuilderExceptionsCode::NoPreviousWhereStatement->value);
+        $this->expectExceptionMessage('List condition IN must have a previous WHERE statement');
+        $this->builder->in(['value_one', 2, 'value_three']);
+    }
 }
