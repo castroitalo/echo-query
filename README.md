@@ -5,7 +5,7 @@
 
 EchoQuery offers a streamlined, intuitive interface for developers. It simplifies complex SQL scripting, enhances readability, and accelerates development, making database interactions effortless and efficient for projects of any scale.
 
-## Usage
+## Basic Usage
 
 To use EchoQuery you have to import into your code:
 
@@ -41,6 +41,109 @@ $query = $echo_query->select(
     ->equalsTo(5)
     ->__toString();
 ```
+
+## Features
+
+### Select and From Statement
+
+The base of any SQL query is the SELECT and FROM statement, you can easily do it with echo query:
+
+Let's create this SQL code into PHP using EchoQuery:
+
+```sql
+SELECT column_one
+FROM table_one
+```
+
+```php
+use CastroItalo\EchoQuery\Builder;
+
+$query = (new Builder())->select(
+    ['column_one']
+)
+    ->from('table_one')
+    ->__toString();
+```
+
+Let's make it more simple:
+
+```sql
+SELECT *
+FROM table_one
+```
+
+```php
+use CastroItalo\EchoQuery\Builder;
+
+$query = (new Builder())->select(
+    ['*']
+)
+    ->from('table_one')
+    ->__toString();
+```
+
+In this case, every array passed in **select** method, is a column and its alias, you can pass any column as you want:
+
+```php
+use CastroItalo\EchoQuery\Builder;
+
+$query = (new Builder())->select(
+    ['column_one', 'co'],
+    ['column_two', 'ct'],
+    ['column_three', 'ctr']
+)
+    ->from('table_one')
+    ->__toString();
+```
+
+### Where statement
+
+You create each WHERE condition at time, if you want to take the `column_one` data only the data that is greater than 10 you just do:
+
+```php
+use CastroItalo\EchoQuery\Builder;
+
+$query = (new Builder())->select(
+    ['column_one', 'co'],
+    ['column_two', 'ct'],
+    ['column_three', 'ctr']
+)
+    ->from('table_one')
+    ->where('column_on')
+    ->greaterThan(10)
+    ->__toString();
+```
+
+You can use `->where()` method with:
+
+- Comparison operators:
+  - `->equalsTo(mixed $value): Builder`
+  - `->notEqualsTo(mixed $value, string $notEqualsToOperator = '!='): Builder`
+  - `->lessThan(mixed $value): Builder`
+  - `->lessThanEqualsTo(mixed $value): Builder`
+  - `->greaterThan(mixed $value): Builder`
+  - `->greaterThanEqualsTo(mixed $value): Builder`
+
+- Logical operators:
+  - `->and(string $columnName): Builder`
+  - `->or(string $columnName): Builder`
+  - `->not(string $columnName): Builder`
+
+- Pattern matching:
+  - `->like(string $pattern): Builder`
+  - `->notLike(string $pattern): Builder`
+
+- Range conditions:
+  - `->between(mixed $start, mixed $end): Builder`
+  - `->notBetween(mixed $start, mixed $end): Builder`
+
+- List conditions:
+  - `->in(array $list): Builder`
+  - `->notIn(array $list): Builder`
+
+- Null conditions:
+  - `->isNull(): Builder`
+  - `->isNotNull(): Builder`
 
 ## Contributing
 
