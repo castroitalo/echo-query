@@ -638,7 +638,7 @@ final class BuilderWhereTest extends TestCase
     {
         $actual = $this->builder->select(
             ['column_one', 'co'],
-            ['column_two', 'ct']
+            ['column_two', 'ct'],
         )
             ->from('table_one', 'to')
             ->where('column_one')
@@ -668,7 +668,7 @@ final class BuilderWhereTest extends TestCase
     {
         $actual = $this->builder->select(
             ['column_one', 'co'],
-            ['column_two', 'ct']
+            ['column_two', 'ct'],
         )
             ->from('table_one', 'to')
             ->where('column_one')

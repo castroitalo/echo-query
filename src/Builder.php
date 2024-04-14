@@ -111,7 +111,7 @@ final class Builder
     public function notEqualsTo(mixed $value, string $notEqualsToOperator = '!='): self
     {
         // Validate not equals to comparison operator
-        if (!in_array($notEqualsToOperator, ['!=', '<>'])) {
+        if (! in_array($notEqualsToOperator, ['!=', '<>'])) {
             throw new BuilderException(
                 'Invalid ' . $notEqualsToOperator . ' comparison operator',
                 $this->invalidComparisonOperatorExceptionCode,

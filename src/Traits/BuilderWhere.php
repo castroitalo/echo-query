@@ -102,7 +102,7 @@ trait BuilderWhere
     private function baseWhere(string $query, string $columnName): string
     {
         // Exitance conditions
-        if (!str_contains($query, 'SELECT')) {
+        if (! str_contains($query, 'SELECT')) {
             throw new BuilderException(
                 'No previous SELECT statement.',
                 $this->noPreviousSelectStatementExceptionCode,
@@ -139,21 +139,24 @@ trait BuilderWhere
     private function baseComparisonOperator(string $query, string $comparisonOperator, mixed $value): string
     {
         // Existance conditions
-        if (!str_contains($query, 'WHERE') || is_null($this->where)) {
+        if (! str_contains($query, 'WHERE') || is_null($this->where)) {
             throw new BuilderException(
                 'Comparison Operator ' . $comparisonOperator . ' must have a previsou WHERE statemen.',
                 $this->noPreviousWhereStatementExceptionCode,
             );
         }
 
-        if (!in_array($comparisonOperator, self::AVALIABLE_COMPARISON_OPERATORS)) {
+        if (! in_array($comparisonOperator, self::AVALIABLE_COMPARISON_OPERATORS)) {
             throw new BuilderException(
                 'Invalid ' . $comparisonOperator . ' comparison operator',
                 $this->invalidComparisonOperatorExceptionCode,
             );
         }
 
-        $query .= (' ' . $comparisonOperator . ' ' . (is_string($value) ? ' \'' . $value . '\' ' : $value));
+        $oldWhere = $this->where;
+        $newWhere = $this->where .= (' ' . $comparisonOperator . ' ' . (is_string($value) ? ' \'' . $value . '\' ' : $value));
+        $query = str_replace($oldWhere, $newWhere, $query);
+        // $query .= (' ' . $comparisonOperator . ' ' . (is_string($value) ? ' \'' . $value . '\' ' : $value));
 
         return $query;
     }
@@ -177,7 +180,7 @@ trait BuilderWhere
     private function baseLogicalOperator(string $query, string $logicalOperator, string $columnName): string
     {
         // Existance conditions
-        if (!str_contains($query, 'WHERE') || is_null($this->where)) {
+        if (! str_contains($query, 'WHERE') || is_null($this->where)) {
             throw new BuilderException(
                 'Logical Operator ' . $logicalOperator . ' must have a previsou WHERE statemen.',
                 $this->noPreviousWhereStatementExceptionCode,
@@ -191,7 +194,10 @@ trait BuilderWhere
             );
         }
 
-        $query .= (' ' . $logicalOperator . ' ' . $columnName);
+        $oldWhere = $this->where;
+        $newWhere = $this->where .= (' ' . $logicalOperator . ' ' . $columnName);
+        $query = str_replace($oldWhere, $newWhere, $query);
+        // $query .= (' ' . $logicalOperator . ' ' . $columnName);
 
         return $query;
     }
@@ -214,7 +220,7 @@ trait BuilderWhere
     private function basePatternMatching(string $query, string $patternMatchingOperator, string $pattern): string
     {
         // Existance conditions
-        if (!str_contains($query, 'WHERE') || is_null($this->where)) {
+        if (! str_contains($query, 'WHERE') || is_null($this->where)) {
             throw new BuilderException(
                 'Pattern matching ' . $patternMatchingOperator . ' must have a previous WHERE statement.',
                 $this->noPreviousWhereStatementExceptionCode,
@@ -228,7 +234,10 @@ trait BuilderWhere
             );
         }
 
-        $query .= ' ' . $patternMatchingOperator . ' \'' . $pattern . '\' ';
+        $oldWhere = $this->where;
+        $newWhere = $this->where .= ' ' . $patternMatchingOperator . ' \'' . $pattern . '\' ';
+        $query = str_replace($oldWhere, $newWhere, $query);
+        // $query .= ' ' . $patternMatchingOperator . ' \'' . $pattern . '\' ';
 
         return $query;
     }
@@ -252,7 +261,7 @@ trait BuilderWhere
     private function baseRangeCondition(string $query, string $rangeCondition, mixed $start, mixed $end): string
     {
         // Existance conditions
-        if (!str_contains($query, 'WHERE') || is_null($this->where)) {
+        if (! str_contains($query, 'WHERE') || is_null($this->where)) {
             throw new BuilderException(
                 'Range condition ' . $rangeCondition . ' must have a previous WHERE statement',
                 $this->noPreviousWhereStatementExceptionCode,
@@ -261,7 +270,10 @@ trait BuilderWhere
 
         $startValue = is_string($start) ? '\'' . $start . '\'' : $start;
         $endValue = is_string($end) ? '\'' . $end . '\'' : $end;
-        $query .= ' ' . $rangeCondition . ' ' . $startValue . ' AND ' . $endValue . ' ';
+        $oldWhere = $this->where;
+        $newWhere = $this->where .= ' ' . $rangeCondition . ' ' . $startValue . ' AND ' . $endValue . ' ';
+        $query = str_replace($oldWhere, $newWhere, $query);
+        // $query .= ' ' . $rangeCondition . ' ' . $startValue . ' AND ' . $endValue . ' ';
 
         return $query;
     }
@@ -284,7 +296,7 @@ trait BuilderWhere
     private function baseListcondition(string $query, string $listCondition, array $list): string
     {
         // Existance conditions
-        if (!str_contains($query, 'WHERE') || is_null($this->where)) {
+        if (! str_contains($query, 'WHERE') || is_null($this->where)) {
             throw new BuilderException(
                 'List condition ' . $listCondition . ' must have a previous WHERE statement',
                 $this->noPreviousWhereStatementExceptionCode,
@@ -326,7 +338,7 @@ trait BuilderWhere
     public function baseNullConditions(string $query, string $nullCondition): string
     {
         // Existance conditions
-        if (!str_contains($query, 'WHERE') || is_null($this->where)) {
+        if (! str_contains($query, 'WHERE') || is_null($this->where)) {
             throw new BuilderException(
                 'Null condition ' . $nullCondition . ' must have a previous WHERE statement',
                 $this->noPreviousWhereStatementExceptionCode,

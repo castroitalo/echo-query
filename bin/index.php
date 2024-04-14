@@ -19,7 +19,9 @@ function main(): void
     )
         ->from('table_one', 'a')
         ->where('a.column_one')
-        ->isNotNull()
+        ->equalsTo(10)
+        ->and('column_two')
+        ->notEqualsTo(20)
         ->__toString();
 
     echo $query . PHP_EOL;
