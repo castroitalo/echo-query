@@ -101,4 +101,13 @@ enum BuilderExceptionsCode: int
      * in query execution and potential security vulnerabilities.
      */
     case InvalidPattern = 1008;
+
+    /**
+     * Indicates invalid or improperly formatted JOIN information.
+     *
+     * This code is used when JOIN operations contain errors in their formatting or logic,
+     * such as missing table names, incorrect join types, or syntactically wrong conditions.
+     * Proper JOIN syntax and logical setup are crucial for the correct execution of SQL queries involving multiple tables.
+     */
+    case InvalidJoinInfo = 1009;
 }

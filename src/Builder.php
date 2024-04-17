@@ -6,6 +6,7 @@ namespace CastroItalo\EchoQuery;
 
 use CastroItalo\EchoQuery\Exceptions\BuilderException;
 use CastroItalo\EchoQuery\Traits\BuilderFrom;
+use CastroItalo\EchoQuery\Traits\BuilderJoin;
 use CastroItalo\EchoQuery\Traits\BuilderSelect;
 use CastroItalo\EchoQuery\Traits\BuilderWhere;
 
@@ -24,6 +25,7 @@ final class Builder
     use BuilderSelect;
     use BuilderFrom;
     use BuilderWhere;
+    use BuilderJoin;
 
     /**
      * Holds the current state of the SQL query being constructed.
@@ -348,6 +350,38 @@ final class Builder
     public function isNotNull(): self
     {
         $this->query = $this->baseNullConditions($this->query, 'IS NOT NULL');
+
+        return $this;
+    }
+
+    /**
+     * Performs an INNER JOIN with the specified conditions.
+     *
+     * This method constructs an INNER JOIN clause for the query, allowing the query to include
+     * data from multiple related tables based on specified join conditions.
+     *
+     * @param array ...$joinInfo An array detailing the join conditions.
+     * @return self Returns $this to enable method chaining.
+     */
+    public function innerJoin(array ...$joinInfo): self
+    {
+        $this->query = $this->baseJoin($this->query, 'INNER', $joinInfo, false);
+
+        return $this;
+    }
+
+    /**
+     * Performs an INNER JOIN with a subquery and specified conditions.
+     *
+     * Similar to the `innerJoin` method, this method constructs an INNER JOIN clause that includes a subquery.
+     * This allows complex joins involving subqueries to be easily constructed and incorporated into the main query.
+     *
+     * @param array ...$joinInfo An array detailing the join conditions including subqueries.
+     * @return self Returns $this to enable method chaining.
+     */
+    public function innerJoinSub(array ...$joinInfo): self
+    {
+        $this->query = $this->baseJoin($this->query, 'INNER', $joinInfo, true);
 
         return $this;
     }

@@ -12,16 +12,29 @@ use CastroItalo\EchoQuery\Builder;
  */
 function main(): void
 {
+    $sub_query = (new Builder())->select(
+        ['column_one'],
+        ['column_four']
+    )
+        ->from('table_three', 'ttr')
+        ->where('column_two')
+        ->equalsTo(2)
+        ->__toString();
+
     $query = (new Builder())->select(
         ['a.column_one', 'co'],
-        ['a.column_two', 'ct'],
-        ['a.column_three', 'cth']
+        ['b.column_two', 'ct'],
+        ['c.column_four', 'cfr']
     )
         ->from('table_one', 'a')
-        ->where('a.column_one')
-        ->equalsTo(10)
-        ->and('column_two')
-        ->notEqualsTo(20)
+        ->innerJoin(
+            ['table_two', 'b'],
+            ['a.column_one', 'b.column_one']
+        )
+        ->innerJoinSub(
+            [$sub_query, 'c'],
+            ['b.column_one', 'c.column_one']
+        )
         ->__toString();
 
     echo $query . PHP_EOL;
