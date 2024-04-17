@@ -387,6 +387,198 @@ final class Builder
     }
 
     /**
+     * Performs an LEFT JOIN with the specified conditions.
+     *
+     * This method constructs an INNER JOIN clause for the query, allowing the query to include
+     * data from multiple related tables based on specified join conditions.
+     *
+     * @param array ...$joinInfo An array detailing the join conditions.
+     * @return self Returns $this to enable method chaining.
+     */
+    public function leftJoin(array ...$joinInfo): self
+    {
+        $this->query = $this->baseJoin($this->query, 'LEFT', $joinInfo, false);
+
+        return $this;
+    }
+
+    /**
+     * Performs an LEFT JOIN with a subquery and specified conditions.
+     *
+     * Similar to the `innerJoin` method, this method constructs an INNER JOIN clause that includes a subquery.
+     * This allows complex joins involving subqueries to be easily constructed and incorporated into the main query.
+     *
+     * @param array ...$joinInfo An array detailing the join conditions including subqueries.
+     * @return self Returns $this to enable method chaining.
+     */
+    public function leftJoinSub(array ...$joinInfo): self
+    {
+        $this->query = $this->baseJoin($this->query, 'LEFT', $joinInfo, true);
+
+        return $this;
+    }
+
+    /**
+     * Performs an RIGHT JOIN with the specified conditions.
+     *
+     * This method constructs an INNER JOIN clause for the query, allowing the query to include
+     * data from multiple related tables based on specified join conditions.
+     *
+     * @param array ...$joinInfo An array detailing the join conditions.
+     * @return self Returns $this to enable method chaining.
+     */
+    public function rightJoin(array ...$joinInfo): self
+    {
+        $this->query = $this->baseJoin($this->query, 'RIGHT', $joinInfo, false);
+
+        return $this;
+    }
+
+    /**
+     * Performs an RIGHT JOIN with a subquery and specified conditions.
+     *
+     * Similar to the `innerJoin` method, this method constructs an INNER JOIN clause that includes a subquery.
+     * This allows complex joins involving subqueries to be easily constructed and incorporated into the main query.
+     *
+     * @param array ...$joinInfo An array detailing the join conditions including subqueries.
+     * @return self Returns $this to enable method chaining.
+     */
+    public function rightJoinSub(array ...$joinInfo): self
+    {
+        $this->query = $this->baseJoin($this->query, 'RIGHT', $joinInfo, true);
+
+        return $this;
+    }
+
+    /**
+     * Performs an FULL JOIN with the specified conditions.
+     *
+     * This method constructs an INNER JOIN clause for the query, allowing the query to include
+     * data from multiple related tables based on specified join conditions.
+     *
+     * @param array ...$joinInfo An array detailing the join conditions.
+     * @return self Returns $this to enable method chaining.
+     */
+    public function fullJoin(array ...$joinInfo): self
+    {
+        $this->query = $this->baseJoin($this->query, 'FULL', $joinInfo, false);
+
+        return $this;
+    }
+
+    /**
+     * Performs an FULL JOIN with a subquery and specified conditions.
+     *
+     * Similar to the `innerJoin` method, this method constructs an INNER JOIN clause that includes a subquery.
+     * This allows complex joins involving subqueries to be easily constructed and incorporated into the main query.
+     *
+     * @param array ...$joinInfo An array detailing the join conditions including subqueries.
+     * @return self Returns $this to enable method chaining.
+     */
+    public function fullJoinSub(array ...$joinInfo): self
+    {
+        $this->query = $this->baseJoin($this->query, 'FULL', $joinInfo, true);
+
+        return $this;
+    }
+
+    /**
+     * Performs an CROSS JOIN with the specified conditions.
+     *
+     * This method constructs an INNER JOIN clause for the query, allowing the query to include
+     * data from multiple related tables based on specified join conditions.
+     *
+     * @param array ...$joinInfo An array detailing the join conditions.
+     * @return self Returns $this to enable method chaining.
+     */
+    public function crossJoin(array ...$joinInfo): self
+    {
+        $this->query = $this->baseJoin($this->query, 'CROSS', $joinInfo, false);
+
+        return $this;
+    }
+
+    /**
+     * Performs an CROSS JOIN with a subquery and specified conditions.
+     *
+     * Similar to the `innerJoin` method, this method constructs an INNER JOIN clause that includes a subquery.
+     * This allows complex joins involving subqueries to be easily constructed and incorporated into the main query.
+     *
+     * @param array ...$joinInfo An array detailing the join conditions including subqueries.
+     * @return self Returns $this to enable method chaining.
+     */
+    public function crossJoinSub(array ...$joinInfo): self
+    {
+        $this->query = $this->baseJoin($this->query, 'CROSS', $joinInfo, true);
+
+        return $this;
+    }
+
+    /**
+     * Performs an SELF JOIN with the specified conditions.
+     *
+     * This method constructs an INNER JOIN clause for the query, allowing the query to include
+     * data from multiple related tables based on specified join conditions.
+     *
+     * @param array ...$joinInfo An array detailing the join conditions.
+     * @return self Returns $this to enable method chaining.
+     */
+    public function selfJoin(array ...$joinInfo): self
+    {
+        $this->query = $this->baseJoin($this->query, 'SELF', $joinInfo, false);
+
+        return $this;
+    }
+
+    /**
+     * Performs an SELF JOIN with a subquery and specified conditions.
+     *
+     * Similar to the `innerJoin` method, this method constructs an INNER JOIN clause that includes a subquery.
+     * This allows complex joins involving subqueries to be easily constructed and incorporated into the main query.
+     *
+     * @param array ...$joinInfo An array detailing the join conditions including subqueries.
+     * @return self Returns $this to enable method chaining.
+     */
+    public function selfJoinSub(array ...$joinInfo): self
+    {
+        $this->query = $this->baseJoin($this->query, 'SELF', $joinInfo, true);
+
+        return $this;
+    }
+
+    /**
+     * Performs an NATURAL JOIN with the specified conditions.
+     *
+     * This method constructs an INNER JOIN clause for the query, allowing the query to include
+     * data from multiple related tables based on specified join conditions.
+     *
+     * @param array ...$joinInfo An array detailing the join conditions.
+     * @return self Returns $this to enable method chaining.
+     */
+    public function naturalJoin(array ...$joinInfo): self
+    {
+        $this->query = $this->baseJoin($this->query, 'NATURAL', $joinInfo, false);
+
+        return $this;
+    }
+
+    /**
+     * Performs an NATURAL JOIN with a subquery and specified conditions.
+     *
+     * Similar to the `innerJoin` method, this method constructs an INNER JOIN clause that includes a subquery.
+     * This allows complex joins involving subqueries to be easily constructed and incorporated into the main query.
+     *
+     * @param array ...$joinInfo An array detailing the join conditions including subqueries.
+     * @return self Returns $this to enable method chaining.
+     */
+    public function naturalJoinSub(array ...$joinInfo): self
+    {
+        $this->query = $this->baseJoin($this->query, 'NATURAL', $joinInfo, true);
+
+        return $this;
+    }
+
+    /**
      * Converts the built query to a string.
      *
      * This method allows the Builder instance to be used directly in contexts expecting a string,
