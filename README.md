@@ -177,6 +177,43 @@ $query = (new Builder())->select(
 
 To use JOIN with sub query you just need to use the equivalent sub query JOIN method:
 
+```sql
+SELECT a.column_one AS co,
+    b.column_two AS ct
+FROM table_one AS a
+WHERE a.column_one > 10
+    INNER JOIN (
+        SELECT column_one,
+            column_two
+        FROM table_two
+    ) AS b
+        ON a.column_one = b.column_one
+```
+
+```php
+use CastroItalo\EchoQuery\Builder;
+
+$sub_query = (new Builder())->select(
+    ['a.column_one', 'co'],
+    ['b.column_two', 'ct'],
+)
+    ->from('table_one', 'a')
+    ->where('column_one')
+    ->__toString();
+$query = (new Builder())->select(
+    ['a.column_one', 'co'],
+    ['b.column_two', 'ct'],
+)
+    ->from('table_one', 'a')
+    ->where('column_one')
+    ->greaterThan(10)
+    ->innerJoin(
+        [$sub_query, 'b'],
+        ['a.column_one', 'b.column_one']
+    )
+    ->__toString();
+```
+
 - INNER JOIN:
   - `->innerJoin(array ...$joinInfo): Builder`
   - `->innerJoinSub(array ...$joinInfo): Builder`
