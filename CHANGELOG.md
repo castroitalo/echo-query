@@ -2,16 +2,16 @@
 
 All notable changes to `EchoQuery` will be documented in this file.
 
-## Last update 13-04-2024
+## Last update 2024-04-17
 
 ### Added
-- Where statement done and tested
+- JOINS done and tested
 
 ### Deprecated
 - Nothing
 
 ### Fixed
-- Where statement more than one comparison operator switching comparisons fixed
+- Nothing
 
 ### Removed
 - Nothing

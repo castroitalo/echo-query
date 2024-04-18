@@ -145,6 +145,66 @@ You can use `->where()` method with:
   - `->isNull(): Builder`
   - `->isNotNull(): Builder`
 
+### JOINS
+
+To use joins you need to call the JOIN method you want, and specify the table and the JOIN columns like in:
+
+```sql
+SELECT a.column_one AS co,
+    b.column_two AS ct
+FROM table_one AS a
+WHERE column_one > 10
+    INNER JOIN table_two AS b
+        ON a.column_one = b.column_one
+```
+
+```php
+use CastroItalo\EchoQuery\Builder;
+
+$query = (new Builder())->select(
+    ['a.column_one', 'co'],
+    ['b.column_two', 'ct'],
+)
+    ->from('table_one', 'a')
+    ->where('column_one')
+    ->greaterThan(10)
+    ->innerJoin(
+        ['table_two', 'b'],
+        ['a.column_one', 'b.column_one']
+    )
+    ->__toString();
+```
+
+To use JOIN with sub query you just need to use the equivalent sub query JOIN method:
+
+- INNER JOIN:
+  - `->innerJoin(array ...$joinInfo): Builder`
+  - `->innerJoinSub(array ...$joinInfo): Builder`
+
+- LEFT JOIN:
+  - `->leftJoin(array ...$joinInfo): Builder`
+  - `->leftJoinSub(array ...$joinInfo): Builder`
+
+- RIGHT JOIN:
+  - `->rightJoin(array ...$joinInfo): Builder`
+  - `->rightJoinSub(array ...$joinInfo): Builder`
+
+- FULL JOIN:
+  - `->fullJoin(array ...$joinInfo): Builder`
+  - `->fullJoinSub(array ...$joinInfo): Builder`
+
+- CROSS JOIN:
+  - `->crossJoin(array ...$joinInfo): Builder`
+  - `->crossJoinSub(array ...$joinInfo): Builder`
+
+- SELF JOIN:
+  - `->selfJoin(array ...$joinInfo): Builder`
+  - `->selfJoinSub(array ...$joinInfo): Builder`
+
+- NATURAL JOIN:
+  - `->naturalJoin(array ...$joinInfo): Builder`
+  - `->naturalJoinSub(array ...$joinInfo): Builder`
+
 ## Contributing
 
 To contribute to the project make sure you have read [CONTRIBUTING](https://github.com/castroitalo/echo-query/blob/main/CONTRIBUTING.md) section.
