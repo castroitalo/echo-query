@@ -113,7 +113,7 @@ final class Builder
     public function notEqualsTo(mixed $value, string $notEqualsToOperator = '!='): self
     {
         // Validate not equals to comparison operator
-        if (! in_array($notEqualsToOperator, ['!=', '<>'])) {
+        if (!in_array($notEqualsToOperator, ['!=', '<>'])) {
             throw new BuilderException(
                 'Invalid ' . $notEqualsToOperator . ' comparison operator',
                 $this->invalidComparisonOperatorExceptionCode,
@@ -574,6 +574,39 @@ final class Builder
     public function naturalJoinSub(array ...$joinInfo): self
     {
         $this->query = $this->baseJoin($this->query, 'NATURAL', $joinInfo, true);
+
+        return $this;
+    }
+
+    /**
+     * Appends a UNION operation to the query.
+     *
+     * This method allows for combining the results of two SELECT statements into a single result set
+     * that includes all the records returned by both SELECT statements. This variant of UNION automatically
+     * removes duplicate records.
+     *
+     * @param string $unionQuery The SQL query to union with the current query.
+     * @return self Returns $this to enable method chaining.
+     */
+    public function union(string $unionQuery): self
+    {
+        $this->query = $this->baseUnion($this->query, $unionQuery, false);
+
+        return $this;
+    }
+
+    /**
+     * Appends a UNION ALL operation to the query.
+     *
+     * This method combines the results of two SELECT statements into a single result set, including all duplicates.
+     * It is useful when you need to include all duplicates between two or more datasets.
+     *
+     * @param string $unionQuery The SQL query to union with the current query.
+     * @return self Returns $this to enable method chaining.
+     */
+    public function unionAll(string $unionQuery): self
+    {
+        $this->query = $this->baseUnion($this->query, $unionQuery, true);
 
         return $this;
     }

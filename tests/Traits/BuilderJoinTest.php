@@ -213,4 +213,117 @@ final class BuilderJoinTest extends TestCase
                 [''],
             );
     }
+
+    /**
+     * Tests the UNION SQL operation without subqueries.
+     *
+     * This method checks the correctness of the SQL UNION operation formulated by the Builder.
+     * It ensures that two separate SELECT queries can be unified into a single result set, excluding duplicate records.
+     *
+     * @return void
+     */
+    public function testUnion(): void
+    {
+        $union_query = (new Builder())->select(
+            ['column_four', 'cfr'],
+            ['column_five', 'cf'],
+            ['column_six', 'cs']
+        )
+            ->from('table_two', 'tt')
+            ->where('column_five')
+            ->notIn([1, 3, 4, 6])
+            ->__toString();
+        $actual = (new Builder())->select(
+            ['column_one', 'co'],
+            ['column_two', 'ct'],
+            ['column_three', 'ctr']
+        )
+            ->from('table_one', 'to')
+            ->where('column_one')
+            ->greaterThan(10)
+            ->union($union_query)
+            ->__toString();
+        $expect = ' SELECT column_one AS co, column_two AS ct, column_three AS ctr ' .
+            ' FROM table_one AS to ' .
+            ' WHERE column_one > 10 ' .
+            ' UNION ' .
+            ' SELECT column_four AS cfr, column_five AS cf, column_six AS cs ' .
+            ' FROM table_two AS tt ' .
+            ' WHERE column_five NOT IN (1, 3, 4, 6) ';
+
+        $this->assertEquals(
+            str_replace(' ', '', $expect),
+            str_replace(' ', '', $actual),
+        );
+    }
+
+    /**
+     * Tests the UNION ALL SQL operation.
+     *
+     * This test confirms the functionality of the UNION ALL operation, which combines the results of two SELECT
+     * statements including all duplicates. It verifies that the Builder accurately constructs the SQL for a UNION ALL
+     * operation and that the resulting query string is as expected.
+     *
+     * @return void
+     */
+    public function testUnionAll(): void
+    {
+        $union_query = (new Builder())->select(
+            ['column_four', 'cfr'],
+            ['column_five', 'cf'],
+            ['column_six', 'cs']
+        )
+            ->from('table_two', 'tt')
+            ->where('column_five')
+            ->notIn([1, 3, 4, 6])
+            ->__toString();
+        $actual = $this->builder->select(
+            ['column_one', 'co'],
+            ['column_two', 'ct'],
+            ['column_three', 'ctr']
+        )
+            ->from('table_one', 'to')
+            ->where('column_one')
+            ->greaterThan(10)
+            ->unionAll($union_query)
+            ->__toString();
+        $expect = ' SELECT column_one AS co, column_two AS ct, column_three AS ctr ' .
+            ' FROM table_one AS to ' .
+            ' WHERE column_one > 10 ' .
+            ' UNION ALL ' .
+            ' SELECT column_four AS cfr, column_five AS cf, column_six AS cs ' .
+            ' FROM table_two AS tt ' .
+            ' WHERE column_five NOT IN (1, 3, 4, 6) ';
+
+        $this->assertEquals(
+            str_replace(' ', '', $expect),
+            str_replace(' ', '', $actual),
+        );
+    }
+
+    /**
+     * Tests the handling of invalid UNION queries.
+     *
+     * This test ensures that the Builder class appropriately throws exceptions when an invalid or empty UNION query
+     * is attempted. It checks for the correct exception type, code, and message, thereby validating the robustness of
+     * error handling in SQL query construction.
+     *
+     * @return void
+     */
+    public function testUnionInvalidUnionQueryException(): void
+    {
+        $this->expectException(BuilderException::class);
+        $this->expectExceptionCode(BuilderExceptionsCode::InvalidUnionQuery->value);
+        $this->expectExceptionMessage('Invalid UNION query.');
+        $this->builder->select(
+            ['column_one', 'co'],
+            ['column_two', 'ct'],
+            ['column_three', 'ctr']
+        )
+            ->from('table_one', 'to')
+            ->where('column_one')
+            ->greaterThan(10)
+            ->union('')
+            ->__toString();
+    }
 }

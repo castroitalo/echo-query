@@ -110,4 +110,12 @@ enum BuilderExceptionsCode: int
      * Proper JOIN syntax and logical setup are crucial for the correct execution of SQL queries involving multiple tables.
      */
     case InvalidJoinInfo = 1009;
+
+    /**
+     * Exception code for invalid UNION queries.
+     *
+     * This code is triggered when the UNION or UNION ALL queries are improperly formatted or logically incorrect, ensuring
+     * that these operations conform to SQL standards and are capable of combining results sets effectively.
+     */
+    case InvalidUnionQuery = 1010;
 }

@@ -38,6 +38,8 @@ trait BuilderJoin
      */
     private int $invalidJoinInfoExceptionCode = BuilderExceptionsCode::InvalidJoinInfo->value;
 
+    private int $invalidUnionQueryExceptionCode = BuilderExceptionsCode::InvalidUnionQuery->value;
+
     /**
      * Constructs a JOIN clause and appends it to the provided SQL query string.
      *
@@ -73,6 +75,39 @@ trait BuilderJoin
         } else {
             $this->join = ' ' . $joinType . ' JOIN ' . $joinTable . ' AS ' . $joinTableAlias .
                 ' ON ' . $joinRightTableColumnName . ' = ' . $joinLeftTableColumnName . ' ';
+        }
+
+        $query .= $this->join;
+
+        return $query;
+    }
+
+    /**
+     * Appends a UNION or UNION ALL clause to the provided SQL query string.
+     *
+     * This method appends a UNION or UNION ALL operation based on the provided SQL query fragment.
+     * It allows for combining the results of multiple SELECT statements into a single result set.
+     *
+     * @param string $query The existing SQL query to which the UNION clause will be appended.
+     * @param string $unionQuery The SQL query to be unioned with the current query.
+     * @param bool $unionAll Specifies whether to use UNION ALL instead of UNION, thus preserving duplicates.
+     * @return string The updated SQL query string with the UNION clause appended.
+     * @throws BuilderException If the UNION query is invalid or empty.
+     */
+    private function baseUnion(string $query, string $unionQuery, bool $unionAll = false): string
+    {
+        // Validate existance conditons
+        if (empty($unionQuery)) {
+            throw new BuilderException(
+                'Invalid UNION query.',
+                $this->invalidUnionQueryExceptionCode,
+            );
+        }
+
+        if ($unionAll) {
+            $this->join = ' UNION ALL ' . $unionQuery . ' ';
+        } else {
+            $this->join = ' UNION ' . $unionQuery . ' ';
         }
 
         $query .= $this->join;

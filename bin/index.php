@@ -12,29 +12,24 @@ use CastroItalo\EchoQuery\Builder;
  */
 function main(): void
 {
-    $sub_query = (new Builder())->select(
-        ['column_one'],
-        ['column_four']
+    $union_query = (new Builder())->select(
+        ['column_four', 'cfr'],
+        ['column_five', 'cf'],
+        ['column_six', 'cs']
     )
-        ->from('table_three', 'ttr')
-        ->where('column_two')
-        ->equalsTo(2)
+        ->from('table_two', 'tt')
+        ->where('column_five')
+        ->notIn([1, 3, 4, 6])
         ->__toString();
-
     $query = (new Builder())->select(
-        ['a.column_one', 'co'],
-        ['b.column_two', 'ct'],
-        ['c.column_four', 'cfr']
+        ['column_one', 'co'],
+        ['column_two', 'ct'],
+        ['column_three', 'ctr']
     )
-        ->from('table_one', 'a')
-        ->innerJoin(
-            ['table_two', 'b'],
-            ['a.column_one', 'b.column_one']
-        )
-        ->innerJoinSub(
-            [$sub_query, 'c'],
-            ['b.column_one', 'c.column_one']
-        )
+        ->from('table_one', 'to')
+        ->where('column_one')
+        ->greaterThan(10)
+        ->union($union_query)
         ->__toString();
 
     echo $query . PHP_EOL;
