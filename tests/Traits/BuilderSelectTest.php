@@ -117,4 +117,61 @@ final class BuilderSelectTest extends TestCase
         $this->expectExceptionMessage('Invalid SELECT statement columns.');
         $this->builder->select([]);
     }
+
+    /**
+     * Tests the functionality of grouping query results using the GROUP BY statement.
+     *
+     * This test ensures that the Builder class can correctly append a GROUP BY clause
+     * to a SELECT statement. It verifies that the SQL query correctly groups the results
+     * by the specified columns, and matches the expected query structure, ignoring whitespace differences.
+     *
+     * @return void
+     * @throws BuilderException If an unexpected error occurs during the query construction.
+     * @throws ExpectationFailedException If the generated SQL does not match the expected result.
+     */
+    public function testGroupBy(): void
+    {
+        $actual = $this->builder->select(
+            ['COUNT(column_one)', 'co'],
+            ['SUM(column_two)', 'ct'],
+        )
+            ->from('table_one', 'to')
+            ->groupBy('column_one', 'column_two')
+            ->__toString();
+        $expect = ' SELECT COUNT(column_one) AS co, ' .
+            ' SUM(column_two) AS ct ' .
+            ' FROM table_one AS to ' .
+            ' GROUP BY column_one, column_two ';
+
+        $this->assertEquals(
+            str_replace(' ', '', $expect),
+            str_replace(' ', '', $actual),
+        );
+    }
+
+    /**
+     * Tests the Builder's handling of invalid GROUP BY columns.
+     *
+     * This test case assesses the Builder's robustness by ensuring it throws an exception
+     * when provided with an invalid or empty list of columns for the GROUP BY clause. It verifies
+     * that the exception thrown is a BuilderException with the correct error message and code,
+     * aligning with defined standards for error handling in the EchoQuery library.
+     *
+     * @return void
+     * @throws BuilderException If the GROUP BY clause is constructed with invalid columns, expected to
+     *                          throw with a specific error code and message.
+     */
+    public function testGroupByInvalidColumnsException(): void
+    {
+        $this->expectException(BuilderException::class);
+        $this->expectExceptionCode(BuilderExceptionsCode::InvalidGroupByColumns->value);
+        $this->expectExceptionMessage('Invalid GROUP BY columns.');
+        $this->builder->select(
+            ['COUNT(column_one)', 'co'],
+            ['SUM(column_two)', 'ct'],
+        )
+            ->from('table_one', 'to')
+            ->groupBy()
+            ->__toString();
+    }
 }

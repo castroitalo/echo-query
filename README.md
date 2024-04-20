@@ -284,6 +284,29 @@ $query = (new Builder())->select(
     ->__toString();
 ```
 
+### GROUP BY
+
+To use GROUP BY on aggregate functions simply use the `->groupBy(string ...$columns): Builder` method, passing one or more columns to group:
+
+```sql
+SELECT COUNT(column_one) AS co
+    SUM(column_two) AS ct
+FROM table_one AS to
+GROUP BY column_one, column_two
+```
+
+```php
+use CastroItalo\EchoQuery\Builder;
+
+$query = (new Builder())->select(
+    ['COUNT(column_one)', 'co'],
+    ['SUM(column_two)', 'ct']
+)
+    ->from('table_one', 'to')
+    ->groupBy('column_one', 'column_two')
+    ->__toString();
+```
+
 ## Contributing
 
 To contribute to the project make sure you have read [CONTRIBUTING](https://github.com/castroitalo/echo-query/blob/main/CONTRIBUTING.md) section.

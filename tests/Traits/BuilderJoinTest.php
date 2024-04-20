@@ -227,7 +227,7 @@ final class BuilderJoinTest extends TestCase
         $union_query = (new Builder())->select(
             ['column_four', 'cfr'],
             ['column_five', 'cf'],
-            ['column_six', 'cs']
+            ['column_six', 'cs'],
         )
             ->from('table_two', 'tt')
             ->where('column_five')
@@ -236,7 +236,7 @@ final class BuilderJoinTest extends TestCase
         $actual = (new Builder())->select(
             ['column_one', 'co'],
             ['column_two', 'ct'],
-            ['column_three', 'ctr']
+            ['column_three', 'ctr'],
         )
             ->from('table_one', 'to')
             ->where('column_one')
@@ -271,7 +271,7 @@ final class BuilderJoinTest extends TestCase
         $union_query = (new Builder())->select(
             ['column_four', 'cfr'],
             ['column_five', 'cf'],
-            ['column_six', 'cs']
+            ['column_six', 'cs'],
         )
             ->from('table_two', 'tt')
             ->where('column_five')
@@ -280,7 +280,7 @@ final class BuilderJoinTest extends TestCase
         $actual = $this->builder->select(
             ['column_one', 'co'],
             ['column_two', 'ct'],
-            ['column_three', 'ctr']
+            ['column_three', 'ctr'],
         )
             ->from('table_one', 'to')
             ->where('column_one')
@@ -318,7 +318,7 @@ final class BuilderJoinTest extends TestCase
         $this->builder->select(
             ['column_one', 'co'],
             ['column_two', 'ct'],
-            ['column_three', 'ctr']
+            ['column_three', 'ctr'],
         )
             ->from('table_one', 'to')
             ->where('column_one')

@@ -113,7 +113,7 @@ final class Builder
     public function notEqualsTo(mixed $value, string $notEqualsToOperator = '!='): self
     {
         // Validate not equals to comparison operator
-        if (!in_array($notEqualsToOperator, ['!=', '<>'])) {
+        if (! in_array($notEqualsToOperator, ['!=', '<>'])) {
             throw new BuilderException(
                 'Invalid ' . $notEqualsToOperator . ' comparison operator',
                 $this->invalidComparisonOperatorExceptionCode,
@@ -607,6 +607,22 @@ final class Builder
     public function unionAll(string $unionQuery): self
     {
         $this->query = $this->baseUnion($this->query, $unionQuery, true);
+
+        return $this;
+    }
+
+    /**
+     * Groups the result set by one or more columns.
+     *
+     * This method adds a GROUP BY clause to the SQL query, which groups the result set by one or more columns.
+     * It is commonly used with aggregate functions (COUNT, MAX, MIN, SUM, AVG) to group the result set by one or more columns.
+     *
+     * @param string ...$columns The columns by which the results are to be grouped.
+     * @return self Returns $this to enable method chaining.
+     */
+    public function groupBy(string ...$columns): self
+    {
+        $this->query = $this->baseGroupBy($this->query, $columns);
 
         return $this;
     }

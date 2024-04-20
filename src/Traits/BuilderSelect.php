@@ -34,6 +34,8 @@ trait BuilderSelect
      */
     private int $invalidColumnNameExceptionCode = BuilderExceptionsCode::InvalidColumnName->value;
 
+    private int $invalidGroupByColumnsExceptionCode = BuilderExceptionsCode::InvalidGroupByColumns->value;
+
     /**
      * Constructs the SELECT part of a query based on provided columns.
      *
@@ -77,6 +79,35 @@ trait BuilderSelect
         }
 
         $query .= $this->select;
+
+        return $query;
+    }
+
+    /**
+     * Constructs a GROUP BY clause and appends it to the provided SQL query string.
+     *
+     * This method validates the existence of columns specified for grouping and constructs the GROUP BY clause.
+     * It throws a BuilderException if the columns array is empty, indicating a misuse or logical error in the
+     * query construction process.
+     *
+     * @param string $query The existing SQL query to which the GROUP BY clause will be appended.
+     * @param array $columns An array of column names used for grouping the results of the query.
+     * @return string The updated SQL query string including the constructed GROUP BY clause.
+     * @throws BuilderException If the columns array is empty, utilizing the specified exception code
+     *                          for invalid GROUP BY columns.
+     */
+    private function baseGroupBy(string $query, array $columns): string
+    {
+        // Existance validation
+        if (empty($columns)) {
+            throw new BuilderException(
+                'Invalid GROUP BY columns.',
+                $this->invalidGroupByColumnsExceptionCode,
+            );
+        }
+
+        $columnsGroupBy = implode(', ', $columns);
+        $query .= ' GROUP BY ' . $columnsGroupBy;
 
         return $query;
     }

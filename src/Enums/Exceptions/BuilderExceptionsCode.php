@@ -118,4 +118,13 @@ enum BuilderExceptionsCode: int
      * that these operations conform to SQL standards and are capable of combining results sets effectively.
      */
     case InvalidUnionQuery = 1010;
+
+    /**
+     * Exception code for invalid GROUP BY column specification.
+     *
+     * Used when the columns specified in a GROUP BY clause are invalid, missing, or not feasible for grouping, which can
+     * impede the accurate aggregation of query results. Ensures that GROUP BY clauses adhere to logical and syntactic
+     * requirements for effective data grouping.
+     */
+    case InvalidGroupByColumns = 1011;
 }

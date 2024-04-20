@@ -12,24 +12,15 @@ use CastroItalo\EchoQuery\Builder;
  */
 function main(): void
 {
-    $union_query = (new Builder())->select(
-        ['column_four', 'cfr'],
-        ['column_five', 'cf'],
-        ['column_six', 'cs']
-    )
-        ->from('table_two', 'tt')
-        ->where('column_five')
-        ->notIn([1, 3, 4, 6])
-        ->__toString();
     $query = (new Builder())->select(
-        ['column_one', 'co'],
-        ['column_two', 'ct'],
+        ['COUNT(column_one)', 'co'],
+        ['SUM(column_two)', 'ct'],
         ['column_three', 'ctr']
     )
         ->from('table_one', 'to')
         ->where('column_one')
         ->greaterThan(10)
-        ->union($union_query)
+        ->groupBy('column_one', 'column_two')
         ->__toString();
 
     echo $query . PHP_EOL;
