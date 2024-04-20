@@ -242,6 +242,48 @@ $query = (new Builder())->select(
   - `->naturalJoin(array ...$joinInfo): Builder`
   - `->naturalJoinSub(array ...$joinInfo): Builder`
 
+### UNIONS
+
+To use use UNIONS just use the `->union(string $unionQuery): Builder` or `->unionAll(string $unionQuery): Builder` with the subsequent query as the parameter:
+
+```sql
+SELECT column_one AS co,
+    column_two AS ct,
+    column_three AS ctr
+FROM table_one AS to
+WHERE column_one > 10
+UNION
+SELECT column_four AS cfr,
+    column_five AS cf,
+    column_six AS cs
+FROM table_two AS tt
+WHERE column_five NOT IN (1, 3, 4, 6);
+```
+
+```php
+use CastroItalo\EchoQuery\Builder;
+
+$union_query = (new Builder())->select(
+    ['column_four', 'cfr'],
+    ['column_five', 'cf'],
+    ['column_six', 'cs']
+)
+    ->from('table_two', 'tt')
+    ->where('column_five')
+    ->notIn([1, 3, 4, 6])
+    ->__toString();
+$query = (new Builder())->select(
+    ['column_one', 'co'],
+    ['column_two', 'ct'],
+    ['column_three', 'ctr']
+)
+    ->from('table_one', 'to')
+    ->where('column_one')
+    ->greaterThan(10)
+    ->union($union_query)
+    ->__toString();
+```
+
 ## Contributing
 
 To contribute to the project make sure you have read [CONTRIBUTING](https://github.com/castroitalo/echo-query/blob/main/CONTRIBUTING.md) section.
