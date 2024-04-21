@@ -116,4 +116,24 @@ trait BuilderSelect
 
         return $query;
     }
+
+    /**
+     * Base method to handle pagination with LIMIT and OFFSET.
+     *
+     * Constructs the pagination part of the SQL query using LIMIT and optionally OFFSET parameters.
+     * This private method is called by `pagination` to format and append the LIMIT and OFFSET clauses to
+     * the current SQL query.
+     *
+     * @param string $query The current SQL query being constructed.
+     * @param int $limit The number of records to return.
+     * @param int|null $offset The starting point for records to return. If null, the query starts from the first record.
+     * @return string The SQL query string modified to include the LIMIT and OFFSET clauses.
+     */
+    private function basePagination(string $query, int $limit, ?int $offset): string
+    {
+        $offsetValue = is_null($offset) ? '' : ' OFFSET ' . $offset . ' ';
+        $query .= ' LIMIT ' . $limit . ' ' . $offsetValue . ' ';
+
+        return $query;
+    }
 }

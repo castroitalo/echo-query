@@ -336,6 +336,30 @@ $query = (new Builder())->select(
     ->__toString();
 ```
 
+### Pagination
+
+To create a pagination just use the `->pagination(int $limit, ?int $offset = null): Builder` method, passing the limit and an optional offset for it:
+
+```sql
+SELECT column_one AS co,
+    column_two AS ct
+FROM table_one AS to
+LIMIT 10
+```
+
+```php
+use CastroItalo\EchoQuery\Builder;
+
+$query = (new Builder())->select(
+    ['COUNT(column_one)', 'co'],
+    ['column_two', 'ct'],
+)
+    ->from('table_one', 'to')
+    ->where('column_one')
+    ->pagination(10)
+    ->__toString();
+```
+
 ## Contributing
 
 To contribute to the project make sure you have read [CONTRIBUTING](https://github.com/castroitalo/echo-query/blob/main/CONTRIBUTING.md) section.

@@ -22,6 +22,7 @@ function main(): void
         ->greaterThan(10)
         ->having('COUNT(column_one)')
         ->greaterThan(10)
+        ->pagination(10)
         ->__toString();
 
     echo $query . PHP_EOL;

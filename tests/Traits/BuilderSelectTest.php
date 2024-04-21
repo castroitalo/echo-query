@@ -174,4 +174,62 @@ final class BuilderSelectTest extends TestCase
             ->groupBy()
             ->__toString();
     }
+
+    /**
+     * Tests pagination functionality without specifying an offset.
+     *
+     * This test verifies that the Builder class can correctly append a LIMIT clause to a SELECT statement
+     * when only the limit is specified, without an offset. It checks whether the constructed SQL query
+     * string correctly limits the number of results returned, conforming to the expected SQL format.
+     *
+     * @return void
+     * @throws ExpectationFailedException If the actual SQL query does not match the expected format.
+     */
+    public function testPaginationWithoutOffset(): void
+    {
+        $actual = $this->builder->select(
+            ['column_one', 'co'],
+            ['column_two', 'ct'],
+        )
+            ->from('table_one', 'to')
+            ->pagination(10)
+            ->__toString();
+        $expect = ' SELECT column_one AS co, column_two AS ct ' .
+            ' FROM table_one AS to ' .
+            ' LIMIT 10 ';
+
+        $this->assertEquals(
+            str_replace(' ', '', $expect),
+            str_replace(' ', '', $actual),
+        );
+    }
+
+    /**
+     * Tests pagination functionality with both limit and offset specified.
+     *
+     * This test ensures that the Builder class can accurately handle SQL queries that require both
+     * a LIMIT and an OFFSET clause. It verifies that the SQL query string is constructed correctly,
+     * limiting the results to a specified number and skipping a defined number of rows.
+     *
+     * @return void
+     * @throws ExpectationFailedException If the actual SQL query does not conform to the expected output.
+     */
+    public function testPaginationWithOffset(): void
+    {
+        $actual = $this->builder->select(
+            ['column_one', 'co'],
+            ['column_two', 'ct'],
+        )
+            ->from('table_one', 'to')
+            ->pagination(10, 20)
+            ->__toString();
+        $expect = ' SELECT column_one AS co, column_two AS ct ' .
+            ' FROM table_one AS to ' .
+            ' LIMIT 10 OFFSET 20';
+
+        $this->assertEquals(
+            str_replace(' ', '', $expect),
+            str_replace(' ', '', $actual),
+        );
+    }
 }

@@ -644,6 +644,24 @@ final class Builder
     }
 
     /**
+     * Applies pagination to the SQL query.
+     *
+     * This method appends LIMIT and OFFSET clauses to the current SQL query, effectively implementing pagination.
+     * It enables the selective retrieval of a subset of records, which is particularly useful for handling large
+     * datasets displayed on multiple pages in a user interface.
+     *
+     * @param int $limit The number of records to return.
+     * @param int|null $offset The offset of the first record to return. Optional; if omitted, starts from the first record.
+     * @return self Returns $this to enable method chaining.
+     */
+    public function pagination(int $limit, ?int $offset = null): self
+    {
+        $this->query = $this->basePagination($this->query, $limit, $offset);
+
+        return $this;
+    }
+
+    /**
      * Converts the built query to a string.
      *
      * This method allows the Builder instance to be used directly in contexts expecting a string,
