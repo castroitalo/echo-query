@@ -628,6 +628,22 @@ final class Builder
     }
 
     /**
+     * Applies a HAVING clause to the query.
+     *
+     * The HAVING clause is used to specify conditions on the groups formed by the GROUP BY clause.
+     * Unlike WHERE, which applies before the data is grouped, HAVING applies after grouping the data.
+     *
+     * @param string $having The condition for the HAVING clause.
+     * @return self Returns $this instance for method chaining.
+     */
+    public function having(string $having): self
+    {
+        $this->query = $this->baseHaving($this->query, $having);
+
+        return $this;
+    }
+
+    /**
      * Converts the built query to a string.
      *
      * This method allows the Builder instance to be used directly in contexts expecting a string,

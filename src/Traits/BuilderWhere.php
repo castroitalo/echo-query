@@ -81,9 +81,20 @@ trait BuilderWhere
      * run with malformed or potentially harmful input, thus maintaining the integrity and security of the database
      * interaction.
      *
-     * @var int $invalidPattern Error code indicating an invalid pattern for pattern matching operations.
+     * @var int $invalidPatternExceptionCode Error code indicating an invalid pattern for pattern matching operations.
      */
-    private int $invalidPattern = BuilderExceptionsCode::InvalidPattern->value;
+    private int $invalidPatternExceptionCode = BuilderExceptionsCode::InvalidPatternExceptionCode->value;
+
+    /**
+     * Error code for invalid HAVING statements within SQL queries.
+     *
+     * This property holds the error code used when an invalid or malformed HAVING clause is detected
+     * during the construction of SQL queries. The error ensures that only syntactically correct and
+     * logically valid HAVING clauses are included in SQL statements.
+     *
+     * @var int
+     */
+    private int $invalidHavingExceptionCode = BuilderExceptionsCode::InvalidHavingStatement->value;
 
     /**
      * Constructs a WHERE clause for an SQL query based on the provided column name.
@@ -156,7 +167,36 @@ trait BuilderWhere
         $oldWhere = $this->where;
         $newWhere = $this->where .= (' ' . $comparisonOperator . ' ' . (is_string($value) ? ' \'' . $value . '\' ' : $value));
         $query = str_replace($oldWhere, $newWhere, $query);
-        // $query .= (' ' . $comparisonOperator . ' ' . (is_string($value) ? ' \'' . $value . '\' ' : $value));
+
+        return $query;
+    }
+
+    /**
+     * Constructs a HAVING clause for SQL queries based on the provided condition.
+     *
+     * This method allows for the dynamic insertion of a HAVING clause into an ongoing SQL query construction,
+     * enabling aggregate functions to be filtered according to specified conditions. It checks the validity
+     * of the HAVING expression to ensure the integrity and functionality of the SQL query. If the condition is
+     * found to be invalid (e.g., empty or syntactically incorrect), a BuilderException is thrown.
+     *
+     * @param string $query The SQL query string being constructed.
+     * @param string $having The condition to be applied in the HAVING clause.
+     * @return string The modified SQL query including the HAVING clause.
+     * @throws BuilderException If the HAVING condition is empty or otherwise invalid.
+     */
+    private function baseHaving(string $query, string $having): string
+    {
+        // Validate having
+        if (empty($having)) {
+            throw new BuilderException(
+                'Invalid HAVING statement.',
+                $this->invalidHavingExceptionCode,
+            );
+        }
+
+        $oldWhere = $this->where;
+        $newWhere = $this->where .= ' HAVING ' . $having . ' ';
+        $query = str_replace($oldWhere, $newWhere, $query);
 
         return $query;
     }
@@ -197,7 +237,6 @@ trait BuilderWhere
         $oldWhere = $this->where;
         $newWhere = $this->where .= (' ' . $logicalOperator . ' ' . $columnName);
         $query = str_replace($oldWhere, $newWhere, $query);
-        // $query .= (' ' . $logicalOperator . ' ' . $columnName);
 
         return $query;
     }
@@ -230,14 +269,13 @@ trait BuilderWhere
         if (empty($pattern)) {
             throw new BuilderException(
                 'Invalid pattern matching pattern.',
-                $this->invalidPattern,
+                $this->invalidPatternExceptionCode,
             );
         }
 
         $oldWhere = $this->where;
         $newWhere = $this->where .= ' ' . $patternMatchingOperator . ' \'' . $pattern . '\' ';
         $query = str_replace($oldWhere, $newWhere, $query);
-        // $query .= ' ' . $patternMatchingOperator . ' \'' . $pattern . '\' ';
 
         return $query;
     }
@@ -273,7 +311,6 @@ trait BuilderWhere
         $oldWhere = $this->where;
         $newWhere = $this->where .= ' ' . $rangeCondition . ' ' . $startValue . ' AND ' . $endValue . ' ';
         $query = str_replace($oldWhere, $newWhere, $query);
-        // $query .= ' ' . $rangeCondition . ' ' . $startValue . ' AND ' . $endValue . ' ';
 
         return $query;
     }

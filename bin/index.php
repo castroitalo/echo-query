@@ -14,13 +14,14 @@ function main(): void
 {
     $query = (new Builder())->select(
         ['COUNT(column_one)', 'co'],
-        ['SUM(column_two)', 'ct'],
+        ['column_two', 'ct'],
         ['column_three', 'ctr']
     )
         ->from('table_one', 'to')
         ->where('column_one')
         ->greaterThan(10)
-        ->groupBy('column_one', 'column_two')
+        ->having('COUNT(column_one)')
+        ->greaterThan(10)
         ->__toString();
 
     echo $query . PHP_EOL;

@@ -307,6 +307,35 @@ $query = (new Builder())->select(
     ->__toString();
 ```
 
+### HAVING
+
+For using HAVING just use the `->having(string $having): Builder` with one of the comparison operator:
+
+```sql
+SELECT COUNT(column_one) AS co,
+    column_two AS ct,
+    column_three AS ctr
+FROM table_one AS to
+WHERE column_one > 10
+HAVING COUNT(column_one) > 10
+```
+
+```php
+use CastroItalo\EchoQuery\Builder;
+
+$query = (new Builder())->select(
+    ['COUNT(column_one)', 'co'],
+    ['column_two', 'ct'],
+    ['column_three', 'ctr']
+)
+    ->from('table_one', 'to')
+    ->where('column_one')
+    ->greaterThan(10)
+    ->having('COUNT(column_one)')
+    ->greaterThan(10)
+    ->__toString();
+```
+
 ## Contributing
 
 To contribute to the project make sure you have read [CONTRIBUTING](https://github.com/castroitalo/echo-query/blob/main/CONTRIBUTING.md) section.

@@ -38,6 +38,15 @@ trait BuilderJoin
      */
     private int $invalidJoinInfoExceptionCode = BuilderExceptionsCode::InvalidJoinInfo->value;
 
+    /**
+     * The exception code for when an invalid UNION query is attempted.
+     *
+     * This property holds the error code that is thrown if a UNION query operation fails due to an invalid
+     * query segment. It ensures that all UNION operations adhere to proper SQL syntax and are logically valid
+     * within the context of the overall query, safeguarding the integrity of the database operations.
+     *
+     * @var int The error code associated with invalid UNION operations.
+     */
     private int $invalidUnionQueryExceptionCode = BuilderExceptionsCode::InvalidUnionQuery->value;
 
     /**

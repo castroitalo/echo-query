@@ -100,7 +100,7 @@ enum BuilderExceptionsCode: int
      * ensures that pattern matching operations are executed with valid and well-formed patterns, avoiding errors
      * in query execution and potential security vulnerabilities.
      */
-    case InvalidPattern = 1008;
+    case InvalidPatternExceptionCode = 1008;
 
     /**
      * Indicates invalid or improperly formatted JOIN information.
@@ -127,4 +127,10 @@ enum BuilderExceptionsCode: int
      * requirements for effective data grouping.
      */
     case InvalidGroupByColumns = 1011;
+
+    /**
+     * Used when an invalid HAVING clause is specified, which can lead to incorrect data filtering
+     * based on aggregated results.
+     */
+    case InvalidHavingStatement = 1012;
 }

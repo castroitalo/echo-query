@@ -454,7 +454,7 @@ final class BuilderWhereTest extends TestCase
     public function testWhereStatementPatternMatchingInvalidPatternException(): void
     {
         $this->expectException(BuilderException::class);
-        $this->expectExceptionCode(BuilderExceptionsCode::InvalidPattern->value);
+        $this->expectExceptionCode(BuilderExceptionsCode::InvalidPatternExceptionCode->value);
         $this->expectExceptionMessage('Invalid pattern matching pattern.');
         $this->builder->select(
             ['column_one', 'co'],
@@ -700,5 +700,68 @@ final class BuilderWhereTest extends TestCase
         $this->expectExceptionCode(BuilderExceptionsCode::NoPreviousWhereStatement->value);
         $this->expectExceptionMessage('Null condition IS NULL must have a previous WHERE statement');
         $this->builder->isNull();
+    }
+
+    /**
+     * Tests the application of the HAVING clause in conjunction with WHERE conditions.
+     *
+     * This test verifies that the Builder can construct SQL queries that include both WHERE and HAVING clauses.
+     * It specifically checks if the HAVING clause correctly filters the results of aggregate functions based on
+     * the specified condition. The test involves counting entries that meet a certain condition specified in the
+     * WHERE clause and then applying a HAVING clause to filter these results further.
+     *
+     * @return void
+     * @throws ExpectationFailedException If the actual SQL query does not match the expected format.
+     */
+    public function testWhereHaving(): void
+    {
+        $actual = $this->builder->select(
+            ['COUNT(column_one)', 'co'],
+            ['column_two', 'ct'],
+        )
+            ->from('table_one')
+            ->where('column_two')
+            ->equalsTo(10)
+            ->having('COUNT(column_one)')
+            ->greaterThan(5)
+            ->__toString();
+        $expect = ' SELECT COUNT(column_one) AS co, ' .
+            ' column_two AS ct ' .
+            ' FROM table_one ' .
+            ' WHERE column_two = 10 ' .
+            ' HAVING COUNT(column_one) > 5 ';
+
+        $this->assertEquals(
+            str_replace(' ', '', $expect),
+            str_replace(' ', '', $actual),
+        );
+    }
+
+    /**
+     * Tests exception handling for invalid HAVING clause expressions.
+     *
+     * Ensures that the Builder class throws a BuilderException when an invalid or empty expression is
+     * passed to the HAVING clause of a query. This test highlights the importance of correct syntax and
+     * logical expression formulation in HAVING clauses, which are crucial for the accurate execution of
+     * SQL queries involving aggregate functions.
+     *
+     * @return void
+     * @throws BuilderException If an invalid HAVING statement is provided.
+     */
+    public function testWhereHavingInvalidHavingException(): void
+    {
+        $this->expectException(BuilderException::class);
+        $this->expectExceptionCode(BuilderExceptionsCode::InvalidHavingStatement->value);
+        $this->expectExceptionMessage('Invalid HAVING statement.');
+        $this->builder->select(
+            ['COUNT(column_one)', 'co'],
+            ['column_two', 'ct'],
+        )
+            ->from('table_one')
+            ->where('column_two')
+            ->equalsTo(10)
+            ->having('')
+            ->greaterThan(5)
+            ->__toString();
     }
 }

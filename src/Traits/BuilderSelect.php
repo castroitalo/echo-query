@@ -34,6 +34,11 @@ trait BuilderSelect
      */
     private int $invalidColumnNameExceptionCode = BuilderExceptionsCode::InvalidColumnName->value;
 
+    /**
+     * The error code assiciated with group by having condition.
+     *
+     * @var int $invalidGroupByColumnsExceptionCode Error code to use when an invalid group by conditions is encoutered.
+     */
     private int $invalidGroupByColumnsExceptionCode = BuilderExceptionsCode::InvalidGroupByColumns->value;
 
     /**

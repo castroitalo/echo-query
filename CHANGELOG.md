@@ -5,7 +5,7 @@ All notable changes to `EchoQuery` will be documented in this file.
 ## Last update 2024-04-20
 
 ### Added
-- GROUP BY done.
+- HAVING statement done and tested.
 
 ### Deprecated
 - Nothing
