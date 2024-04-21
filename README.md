@@ -4,6 +4,12 @@ EchoQuery offers a streamlined, intuitive interface for developers. It simplifie
 
 ## Basic Usage
 
+To be able to use the EchoQuery package you need to install it with the following command:
+
+```shell
+composer require castroitalo/echoquery
+```
+
 To generate a string with your query using EchoQuery just use the methods available:
 
 - Query example:
