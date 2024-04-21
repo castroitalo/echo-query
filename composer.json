@@ -3,6 +3,15 @@
   "description": "EchoQuery facilitates the writing of SQL queries inside the PHP code",
   "type": "library",
   "license": "MIT",
+  "keywords": [
+    "sql",
+    "query",
+    "builder"
+  ],
+  "support": {
+    "email": "dev.castro.italo@gmail.com",
+    "issues": "https://github.com/castroitalo/echoquery/issues"
+  },
   "autoload": {
     "psr-4": {
       "CastroItalo\\EchoQuery\\": "src/"

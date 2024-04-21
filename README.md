@@ -1,13 +1,10 @@
 # EchoQuery
 
-> **Status: In Development**
-> This library is currently in the development stage and may undergo significant changes. Feedback and contributions are welcome!
-
 EchoQuery offers a streamlined, intuitive interface for developers. It simplifies complex SQL scripting, enhances readability, and accelerates development, making database interactions effortless and efficient for projects of any scale.
 
 ## Basic Usage
 
-To use EchoQuery you have to import into your code:
+To generate a string with your query using EchoQuery just use the methods available:
 
 - Query example:
 
@@ -82,7 +79,7 @@ $query = (new Builder())->select(
     ->__toString();
 ```
 
-In this case, every array passed in **select** method, is a column and its alias, you can pass any column as you want:
+In this case, every array passed in **select** method, is a column and its alias, you can pass as much columns as you want:
 
 ```php
 use CastroItalo\EchoQuery\Builder;
@@ -367,20 +364,6 @@ To contribute to the project make sure you have read [CONTRIBUTING](https://gith
 ## Changelog
 
 Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.
-
-## Testing
-
-Each EchoQuery functionality is separated in traits, for the SQL SELECT statement is used the **BuilderSelect.php** trait, so you can run tests for each individual trait like:
-
-```shell
-composer run builder_select_tests
-```
-
-To run all tests just type:
-
-```shell
-composer run tests
-```
 
 ## Contributing
 

@@ -18,6 +18,20 @@ Before contributing make sure you have read [CODE_OF_CONDUCT](https://github.com
 - Enter inside docker container with `docker container exec -it echo-query-app-1 bash`.
 - And run `composer run echo_query` to run **bin/index.php** file (used for testing).
 
+## Testing
+
+Each EchoQuery functionality is separated in traits, for the SQL SELECT statement is used the **BuilderSelect.php** trait, so you can run tests for each individual trait like:
+
+```shell
+composer run builder_select_tests
+```
+
+To run all tests just type:
+
+```shell
+composer run tests
+```
+
 ## Pull Requests
 
 - **[PSR-2 Coding Standard](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-2-coding-style-guide.md)** - The easiest way to apply the conventions is to install [PHP Code Sniffer](http://pear.php.net/package/PHP_CodeSniffer).
