@@ -13,16 +13,14 @@ use CastroItalo\EchoQuery\Builder;
 function main(): void
 {
     $query = (new Builder())->select(
-        ['COUNT(column_one)', 'co'],
-        ['column_two', 'ct'],
-        ['column_three', 'ctr']
+        ['name'],
+        ['age']
     )
-        ->from('table_one', 'to')
-        ->where('column_one')
-        ->greaterThan(10)
-        ->having('COUNT(column_one)')
-        ->greaterThan(10)
-        ->pagination(10)
+        ->from('contacts')
+        ->where('age')
+        ->greaterThan(18)
+        ->and('surname')
+        ->like('%castro%')
         ->__toString();
 
     echo $query . PHP_EOL;

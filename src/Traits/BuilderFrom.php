@@ -21,13 +21,6 @@ use CastroItalo\EchoQuery\Exceptions\BuilderException;
 trait BuilderFrom
 {
     /**
-     * The current FROM statement being built.
-     *
-     * @var string|null $from Holds the partial FROM statement as it is being constructed.
-     */
-    private ?string $from = null;
-
-    /**
      * The error code for when there is no previous SELECT statement.
      *
      * @var int $noPreviousSelectStatementExceptionCode Error code for missing SELECT statement before FROM.
@@ -108,8 +101,7 @@ trait BuilderFrom
         $this->baseFromStatementValidation($query, $tableName);
 
         $tableAliasValue = (is_null($tableAlias) || empty($tableAlias)) ? '' : ' AS ' . $tableAlias;
-        $this->from = ' FROM ' . $tableName . ' ' . $tableAliasValue;
-        $query .= $this->from;
+        $query .= ' FROM ' . $tableName . ' ' . $tableAliasValue;
 
         return $query;
     }
@@ -150,8 +142,7 @@ trait BuilderFrom
             );
         }
 
-        $this->from = ' FROM ( ' . $subQuery . ' ) AS ' . $subQueryAlias;
-        $query .= $this->from;
+        $query .= ' FROM ( ' . $subQuery . ' ) AS ' . $subQueryAlias;
 
         return $query;
     }

@@ -21,13 +21,6 @@ use CastroItalo\EchoQuery\Exceptions\BuilderException;
 trait BuilderSelect
 {
     /**
-     * The current SELECT statement being built.
-     *
-     * @var string|null $select Holds the partial SELECT statement as it is being constructed.
-     */
-    private ?string $select = null;
-
-    /**
      * The error code associated with invalid column names.
      *
      * @var int $invalidColumnNameExceptionCode Error code to use when an invalid column name is encountered.
@@ -57,7 +50,7 @@ trait BuilderSelect
      */
     private function baseSelect(string $query, array $columns): string
     {
-        $this->select = ' SELECT ';
+        $select = ' SELECT ';
         $columnsCounter = 1;
 
         foreach ($columns as $column) {
@@ -74,16 +67,16 @@ trait BuilderSelect
             $columnAliasValue = is_null($columnAlias) ? '' : ' AS ' . $columnAlias;
 
             if (($columnsCounter + 1) > sizeof($columns)) {
-                $this->select .= ' ' . $columnName . ' ' . $columnAliasValue;
+                $select .= ' ' . $columnName . ' ' . $columnAliasValue;
 
                 break;
             }
 
-            $this->select .= ' ' . $columnName . ' ' . $columnAliasValue . ', ';
+            $select .= ' ' . $columnName . ' ' . $columnAliasValue . ', ';
             $columnsCounter += 1;
         }
 
-        $query .= $this->select;
+        $query .= $select;
 
         return $query;
     }
