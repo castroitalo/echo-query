@@ -18,9 +18,7 @@ function main(): void
     )
         ->from('contacts')
         ->where('age')
-        ->greaterThan(18)
-        ->and('surname')
-        ->like('%castro%')
+        ->in(['\'nome\'', '\'nome_dois\''])
         ->__toString();
 
     echo $query . PHP_EOL;

@@ -299,7 +299,7 @@ final class BuilderWhereTest extends TestCase
             ->where('column_one')
             ->equalsTo(2)
             ->$logicalOperatorMethod('column_two')
-            ->notEqualsTo('something')
+            ->notEqualsTo('\'something\'')
             ->__toString();
         $expect = 'SELECT column_one AS co, column_two AS ct' .
             'FROM table_one AS to' .
@@ -564,7 +564,7 @@ final class BuilderWhereTest extends TestCase
         )
             ->from('table_one', 'to')
             ->where('column_one')
-            ->in(['value_one', 2, 'value_three'])
+            ->in(['\'value_one\'', 2, '\'value_three\''])
             ->__toString();
         $expect = ' SELECT column_one AS co, column_two AS ct ' .
             ' FROM table_one AS to ' .
@@ -594,7 +594,7 @@ final class BuilderWhereTest extends TestCase
         )
             ->from('table_one', 'to')
             ->where('column_one')
-            ->notIn(['value_one', 2, 'value_three'])
+            ->notIn(['\'value_one\'', 2, '\'value_three\''])
             ->__toString();
         $expect = ' SELECT column_one AS co, column_two AS ct ' .
             ' FROM table_one AS to ' .

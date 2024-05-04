@@ -165,7 +165,7 @@ trait BuilderWhere
         }
 
         $oldWhere = $this->where;
-        $newWhere = $this->where .= (' ' . $comparisonOperator . ' ' . (is_string($value) ? ' \'' . $value . '\' ' : $value));
+        $newWhere = $this->where .= (' ' . $comparisonOperator . ' ' . $value);
         $query = str_replace($oldWhere, $newWhere, $query);
 
         return $query;
@@ -306,10 +306,8 @@ trait BuilderWhere
             );
         }
 
-        $startValue = is_string($start) ? '\'' . $start . '\'' : $start;
-        $endValue = is_string($end) ? '\'' . $end . '\'' : $end;
         $oldWhere = $this->where;
-        $newWhere = $this->where .= ' ' . $rangeCondition . ' ' . $startValue . ' AND ' . $endValue . ' ';
+        $newWhere = $this->where .= ' ' . $rangeCondition . ' ' . $start . ' AND ' . $end . ' ';
         $query = str_replace($oldWhere, $newWhere, $query);
 
         return $query;
@@ -344,15 +342,13 @@ trait BuilderWhere
         $listCounter = 1;
 
         foreach ($list as $element) {
-            $value = is_string($element) ? ' \'' . $element . '\' ' : $element;
-
             if (($listCounter + 1) > sizeof($list)) {
-                $listValue .= ' ' . $value . ' ) ';
+                $listValue .= ' ' . $element . ' ) ';
 
                 break;
             }
 
-            $listValue .= ' ' . $value . ', ';
+            $listValue .= ' ' . $element . ', ';
             $listCounter += 1;
         }
 
