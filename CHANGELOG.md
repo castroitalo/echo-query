@@ -2,7 +2,7 @@
 
 All notable changes to `EchoQuery` will be documented in this file.
 
-## Last update 2024-04-20
+## Last update 2024-05-04
 
 ### Added
 - Pagination implemented.
@@ -11,7 +11,7 @@ All notable changes to `EchoQuery` will be documented in this file.
 - Nothing
 
 ### Fixed
-- Nothing
+- Automatic single quotes to string values was causing problems on PDOStatement template. Fixed.
 
 ### Removed
-- Nothing
+- Automatic single quotes to string values removed.
