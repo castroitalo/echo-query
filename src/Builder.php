@@ -628,6 +628,21 @@ final class Builder
     }
 
     /**
+     * Orders the result set by one or more columns.
+     *
+     * This method adds a ORDER BY clause to the SQL query, which groups the result set by one or more columns.
+     *
+     * @param string ...$columns The columns by which the results are to be ordered.
+     * @return self Returns $this to enable method chaining.
+     */
+    public function orderBy(array ...$columns): self
+    {
+        $this->query = $this->baseOrderBy($this->query, $columns);
+
+        return $this;
+    }
+
+    /**
      * Applies a HAVING clause to the query.
      *
      * The HAVING clause is used to specify conditions on the groups formed by the GROUP BY clause.

@@ -310,6 +310,33 @@ $query = (new Builder())->select(
     ->__toString();
 ```
 
+### ORDER BY
+
+To use ORDER BY on columns simply use the `->orderBy(array ...$columns): Builder` method, passing one or more columns with the respective ordering function.
+
+```sql
+SELECT column_one AS co,
+    column_two AS ct
+FROM table_one AS to
+ORDER BY column_one,
+    column_two DESC
+```
+
+```php
+use CastroItalo\EchoQuery\Builder;
+
+$query = (new Builder())->select(
+    ['column_one', 'co'],
+    ['column_two', 'ct']
+)
+    ->from('table_one', 'to')
+    ->orderBy(
+        ['column_one'],
+        ['column_two', 'desc']
+    )
+    ->__toString();
+```
+
 ### HAVING
 
 For using HAVING just use the `->having(string $having): Builder` with one of the comparison operator:

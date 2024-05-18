@@ -133,4 +133,20 @@ enum BuilderExceptionsCode: int
      * based on aggregated results.
      */
     case InvalidHavingStatement = 1012;
+
+    /**
+     * Exception code for invalid ORDER BY column specification.
+     *
+     * Used when the columns specified in a ORDER BY clause are invalid, missing, or not feasible for ordering, which can
+     * impede the accurate ordering of query results.
+     */
+    case InvalidOrderByColumns = 1013;
+
+    /**
+     * Exception code for invalid ORDER BY column.
+     *
+     * Used when the column name specified in a ORDER BY clause are invalid, missing, or not feasible for ordering, which can
+     * impede the accurate ordering of query results.
+     */
+    case InvalidOrderColumnName = 1014;
 }

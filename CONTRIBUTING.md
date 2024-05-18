@@ -11,7 +11,7 @@ Before contributing make sure you have read [CODE_OF_CONDUCT](https://github.com
 
 ### Installing project locally
 
-- Build docker image: `docker build . -t echoquery:v1.0.1`.
+- Build docker image: `docker build . -t echoquery:v1.1.0`.
 - Up project with docker compose: `docker compose up -d`.
 
 ### Running project

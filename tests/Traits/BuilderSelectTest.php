@@ -176,6 +176,91 @@ final class BuilderSelectTest extends TestCase
     }
 
     /**
+     * Tests the functionality of ordering query results using the ORDER BY statement.
+     *
+     * This test ensures that the Builder class can correctly append a ORDER BY clause
+     * to a SELECT statement. It verifies that the SQL query correctly orders the results
+     * by the specified columns, and matches the expected query structure, ignoring whitespace differences.
+     *
+     * @return void
+     * @throws BuilderException
+     * @throws ExpectationFailedException
+     */
+    public function testOrderBy(): void
+    {
+        $actual = $this->builder->select(
+            ['column_one', 'co'],
+            ['column_two', 'ct'],
+        )
+            ->from('table_one', 'to')
+            ->orderBy(
+                ['column_one'],
+                ['column_two', 'desc'],
+            )
+            ->__toString();
+        $expect = 'SELECT column_one AS co, column_two AS ct' .
+            'FROM table_one AS to ' .
+            'ORDER BY column_one, column_two DESC';
+
+        $this->assertEquals(
+            str_replace(' ', '', $expect),
+            str_replace(' ', '', $actual),
+        );
+    }
+
+    /**
+     * Tests the Builder's handling of invalid ORDER BY columns.
+     *
+     * This test case assesses the Builder's robustness by ensuring it throws an exception
+     * when provided with an invalid or empty list of columns for the ORDER BY clause. It verifies
+     * that the exception thrown is a BuilderException with the correct error message and code,
+     * aligning with defined standards for error handling in the EchoQuery library.
+     *
+     * @return void
+     * @throws BuilderException If the ORDER BY clause is constructed with invalid columns, expected to
+     *                          throw with a specific error code and message.
+     */
+    public function testOrderByInvalidColumnsException(): void
+    {
+        $this->expectException(BuilderException::class);
+        $this->expectExceptionCode(BuilderExceptionsCode::InvalidOrderByColumns->value);
+        $this->expectExceptionMessage('Invalid ORDER BY columns.');
+        $this->builder->select(
+            ['column_one'],
+        )
+            ->from('table_one')
+            ->orderBy()
+            ->__toString();
+    }
+
+    /**
+     * Tests the Builder's handling of invalid ORDER BY columns.
+     *
+     * This test case assesses the Builder's robustness by ensuring it throws an exception
+     * when provided with an invalid column name  for the ORDER BY clause. It verifies
+     * that the exception thrown is a BuilderException with the correct error message and code,
+     * aligning with defined standards for error handling in the EchoQuery library.
+     *
+     * @return void
+     * @throws BuilderException If the ORDER BY clause is constructed with invalid columns, expected to
+     *                          throw with a specific error code and message.
+     */
+    public function testOrderByInvalidColumnNameException(): void
+    {
+        $this->expectException(BuilderException::class);
+        $this->expectExceptionCode(BuilderExceptionsCode::InvalidOrderColumnName->value);
+        $this->expectExceptionMessage('Invalid ORDER BY column name.');
+        $this->builder->select(
+            ['column_one'],
+        )
+            ->from('table_one')
+            ->orderBy(
+                [],
+            )
+            ->__toString();
+    }
+
+    /**
      * Tests pagination functionality without specifying an offset.
      *
      * This test verifies that the Builder class can correctly append a LIMIT clause to a SELECT statement

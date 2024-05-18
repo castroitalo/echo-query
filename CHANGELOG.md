@@ -2,16 +2,16 @@
 
 All notable changes to `EchoQuery` will be documented in this file.
 
-## Last update 2024-05-04
+## Last update 2024-05-18
 
 ### Added
-- Pagination implemented.
+- ORDER BY clause.
 
 ### Deprecated
 - Nothing
 
 ### Fixed
-- Automatic single quotes to string values was causing problems on PDOStatement template. Fixed.
+- Nothing
 
 ### Removed
-- Automatic single quotes to string values removed.
+- Nothing

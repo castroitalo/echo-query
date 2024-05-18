@@ -35,6 +35,20 @@ trait BuilderSelect
     private int $invalidGroupByColumnsExceptionCode = BuilderExceptionsCode::InvalidGroupByColumns->value;
 
     /**
+     * The error code assiciated with order by.
+     *
+     * @var int $invalidOrderByColumnsExceptionCode Error code to use when an invalid order by conditions is encoutered.
+     */
+    private int $invalidOrderByColumnsExceptionCode = BuilderExceptionsCode::InvalidOrderByColumns->value;
+
+    /**
+     * The error code assiciated with order by.
+     *
+     * @var int $invalidOrderByColumnNameExceptionCode Error code to use when an invalid order by conditions is encoutered.
+     */
+    private int $invalidOrderByColumnNameExceptionCode = BuilderExceptionsCode::InvalidOrderColumnName->value;
+
+    /**
      * Constructs the SELECT part of a query based on provided columns.
      *
      * This method initializes or appends to the $select property based on an array of columns
@@ -106,6 +120,55 @@ trait BuilderSelect
 
         $columnsGroupBy = implode(', ', $columns);
         $query .= ' GROUP BY ' . $columnsGroupBy;
+
+        return $query;
+    }
+
+    /**
+     * Constructs a ORDER BY clause and appends it to the provided SQL query string.
+     *
+     * This method validates the existence of columns specified for ordering and constructs the ORDER BY clause.
+     * It throws a BuilderException if the columns array is empty, indicating a misuse or logical error in the
+     * query construction process.
+     *
+     * @param string $query
+     * @param array $columns
+     * @return string
+     * @throws BuilderException
+     */
+    private function baseOrderBy(string $query, array $columns): string
+    {
+        if (empty($columns)) {
+            throw new BuilderException(
+                'Invalid ORDER BY columns.',
+                $this->invalidOrderByColumnsExceptionCode,
+            );
+        }
+
+        $query .= ' ORDER BY ';
+        $columnsCounter = 1;
+
+        foreach ($columns as $column) {
+            @[$columnName, $columnOrder] = $column;
+
+            if (is_null($columnName)) {
+                throw new BuilderException(
+                    'Invalid ORDER BY column name.',
+                    $this->invalidOrderByColumnNameExceptionCode,
+                );
+            }
+
+            $columnsOrdering = is_null($columnOrder) ? '' : 'DESC';
+
+            if (($columnsCounter + 1) > sizeof($columns)) {
+                $query .= ' ' . $columnName . ' ' . $columnsOrdering;
+
+                break;
+            }
+
+            $query .= ' ' . $columnName . ' ' . $columnsOrdering . ', ';
+            $columnsCounter += 1;
+        }
 
         return $query;
     }

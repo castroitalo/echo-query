@@ -13,17 +13,15 @@ use CastroItalo\EchoQuery\Builder;
 function main(): void
 {
     $query = (new Builder())->select(
-        ['COUNT(column_one)', 'co'],
+        ['column_one', 'co'],
         ['column_two', 'ct'],
-        ['column_three', 'ctr']
+        ['columnt_three', 'ctr']
     )
         ->from('table_one', 'to')
-        ->where('column_one')
-        ->greaterThan(10)
-        ->having('COUNT(column_one)')
-        ->greaterThan(10)
-        ->and('COUNT(column_one)')
-        ->lessThan(100)
+        ->orderBy(
+            ['column_one'],
+            ['column_two', 'desc']
+        )
         ->__toString();
 
     echo $query . PHP_EOL;
