@@ -13,12 +13,17 @@ use CastroItalo\EchoQuery\Builder;
 function main(): void
 {
     $query = (new Builder())->select(
-        ['name'],
-        ['age']
+        ['COUNT(column_one)', 'co'],
+        ['column_two', 'ct'],
+        ['column_three', 'ctr']
     )
-        ->from('contacts')
-        ->where('age')
-        ->in(['\'nome\'', '\'nome_dois\''])
+        ->from('table_one', 'to')
+        ->where('column_one')
+        ->greaterThan(10)
+        ->having('COUNT(column_one)')
+        ->greaterThan(10)
+        ->and('COUNT(column_one)')
+        ->lessThan(100)
         ->__toString();
 
     echo $query . PHP_EOL;
