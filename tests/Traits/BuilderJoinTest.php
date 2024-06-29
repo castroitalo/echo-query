@@ -92,7 +92,7 @@ final class BuilderJoinTest extends TestCase
                 ['table_two', 'b'],
                 ['a.column_one', 'b.column_one'],
             )
-            ->__toString();
+            ->getQuery();
         $expect = ' SELECT a.column_one AS co, b.column_two AS ct ' .
             ' FROM table_one AS to ' .
             ' WHERE a.column_one = 2 ' .
@@ -158,7 +158,7 @@ final class BuilderJoinTest extends TestCase
             ->from('table_two', 'tt')
             ->where('column_one')
             ->equalsTo(5)
-            ->__toString();
+            ->getQuery();
         $actual = $this->builder->select(
             ['a.column_one', 'co'],
             ['b.column_two', 'ct'],
@@ -170,7 +170,7 @@ final class BuilderJoinTest extends TestCase
                 [$subQuery, 'b'],
                 ['a.column_one', 'b.column_one'],
             )
-            ->__toString();
+            ->getQuery();
         $expect = ' SELECT a.column_one AS co, b.column_two AS ct ' .
             ' FROM table_one AS a ' .
             ' WHERE a.column_one NOT IN (1, 2, 3) ' .
@@ -232,7 +232,7 @@ final class BuilderJoinTest extends TestCase
             ->from('table_two', 'tt')
             ->where('column_five')
             ->notIn([1, 3, 4, 6])
-            ->__toString();
+            ->getQuery();
         $actual = (new Builder())->select(
             ['column_one', 'co'],
             ['column_two', 'ct'],
@@ -242,7 +242,7 @@ final class BuilderJoinTest extends TestCase
             ->where('column_one')
             ->greaterThan(10)
             ->union($union_query)
-            ->__toString();
+            ->getQuery();
         $expect = ' SELECT column_one AS co, column_two AS ct, column_three AS ctr ' .
             ' FROM table_one AS to ' .
             ' WHERE column_one > 10 ' .
@@ -276,7 +276,7 @@ final class BuilderJoinTest extends TestCase
             ->from('table_two', 'tt')
             ->where('column_five')
             ->notIn([1, 3, 4, 6])
-            ->__toString();
+            ->getQuery();
         $actual = $this->builder->select(
             ['column_one', 'co'],
             ['column_two', 'ct'],
@@ -286,7 +286,7 @@ final class BuilderJoinTest extends TestCase
             ->where('column_one')
             ->greaterThan(10)
             ->unionAll($union_query)
-            ->__toString();
+            ->getQuery();
         $expect = ' SELECT column_one AS co, column_two AS ct, column_three AS ctr ' .
             ' FROM table_one AS to ' .
             ' WHERE column_one > 10 ' .
@@ -324,6 +324,6 @@ final class BuilderJoinTest extends TestCase
             ->where('column_one')
             ->greaterThan(10)
             ->union('')
-            ->__toString();
+            ->getQuery();
     }
 }

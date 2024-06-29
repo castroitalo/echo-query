@@ -42,7 +42,7 @@ $query = $echo_query->select(
     ->equalsTo(2)
     ->and('column_two')
     ->equalsTo(5)
-    ->__toString();
+    ->getQuery();
 ```
 
 ## Features
@@ -65,7 +65,7 @@ $query = (new Builder())->select(
     ['column_one']
 )
     ->from('table_one')
-    ->__toString();
+    ->getQuery();
 ```
 
 Let's make it more simple:
@@ -82,7 +82,7 @@ $query = (new Builder())->select(
     ['*']
 )
     ->from('table_one')
-    ->__toString();
+    ->getQuery();
 ```
 
 In this case, every array passed in **select** method, is a column and its alias, you can pass as much columns as you want:
@@ -96,7 +96,7 @@ $query = (new Builder())->select(
     ['column_three', 'ctr']
 )
     ->from('table_one')
-    ->__toString();
+    ->getQuery();
 ```
 
 ### Where statement
@@ -114,7 +114,7 @@ $query = (new Builder())->select(
     ->from('table_one')
     ->where('column_on')
     ->greaterThan(10)
-    ->__toString();
+    ->getQuery();
 ```
 
 You can use `->where()` method with:
@@ -175,7 +175,7 @@ $query = (new Builder())->select(
         ['table_two', 'b'],
         ['a.column_one', 'b.column_one']
     )
-    ->__toString();
+    ->getQuery();
 ```
 
 To use JOIN with sub query you just need to use the equivalent sub query JOIN method:
@@ -202,7 +202,7 @@ $sub_query = (new Builder())->select(
 )
     ->from('table_one', 'a')
     ->where('column_one')
-    ->__toString();
+    ->getQuery();
 $query = (new Builder())->select(
     ['a.column_one', 'co'],
     ['b.column_two', 'ct'],
@@ -214,7 +214,7 @@ $query = (new Builder())->select(
         [$sub_query, 'b'],
         ['a.column_one', 'b.column_one']
     )
-    ->__toString();
+    ->getQuery();
 ```
 
 - INNER JOIN:
@@ -274,7 +274,7 @@ $union_query = (new Builder())->select(
     ->from('table_two', 'tt')
     ->where('column_five')
     ->notIn([1, 3, 4, 6])
-    ->__toString();
+    ->getQuery();
 $query = (new Builder())->select(
     ['column_one', 'co'],
     ['column_two', 'ct'],
@@ -284,7 +284,7 @@ $query = (new Builder())->select(
     ->where('column_one')
     ->greaterThan(10)
     ->union($union_query)
-    ->__toString();
+    ->getQuery();
 ```
 
 ### GROUP BY
@@ -307,7 +307,7 @@ $query = (new Builder())->select(
 )
     ->from('table_one', 'to')
     ->groupBy('column_one', 'column_two')
-    ->__toString();
+    ->getQuery();
 ```
 
 ### ORDER BY
@@ -334,7 +334,7 @@ $query = (new Builder())->select(
         ['column_one'],
         ['column_two', 'desc']
     )
-    ->__toString();
+    ->getQuery();
 ```
 
 ### HAVING
@@ -363,7 +363,7 @@ $query = (new Builder())->select(
     ->greaterThan(10)
     ->having('COUNT(column_one)')
     ->greaterThan(10)
-    ->__toString();
+    ->getQuery();
 ```
 
 ### Pagination
@@ -387,7 +387,7 @@ $query = (new Builder())->select(
     ->from('table_one', 'to')
     ->where('column_one')
     ->pagination(10)
-    ->__toString();
+    ->getQuery();
 ```
 
 ## Contributing

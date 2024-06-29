@@ -64,7 +64,7 @@ final class BuilderSelectTest extends TestCase
             ['column_one', 'co'],
             ['column_two', 'ct'],
         )
-            ->__toString();
+            ->getQuery();
         $expect = 'SELECT column_one AS co, column_two AS ct';
 
         $this->assertEquals(
@@ -90,7 +90,7 @@ final class BuilderSelectTest extends TestCase
             ['column_one'],
             ['column_two'],
         )
-            ->__toString();
+            ->getQuery();
         $expect = 'SELECT column_one, column_two';
 
         $this->assertEquals(
@@ -137,7 +137,7 @@ final class BuilderSelectTest extends TestCase
         )
             ->from('table_one', 'to')
             ->groupBy('column_one', 'column_two')
-            ->__toString();
+            ->getQuery();
         $expect = ' SELECT COUNT(column_one) AS co, ' .
             ' SUM(column_two) AS ct ' .
             ' FROM table_one AS to ' .
@@ -172,7 +172,7 @@ final class BuilderSelectTest extends TestCase
         )
             ->from('table_one', 'to')
             ->groupBy()
-            ->__toString();
+            ->getQuery();
     }
 
     /**
@@ -197,7 +197,7 @@ final class BuilderSelectTest extends TestCase
                 ['column_one'],
                 ['column_two', 'desc'],
             )
-            ->__toString();
+            ->getQuery();
         $expect = 'SELECT column_one AS co, column_two AS ct' .
             'FROM table_one AS to ' .
             'ORDER BY column_one, column_two DESC';
@@ -230,7 +230,7 @@ final class BuilderSelectTest extends TestCase
         )
             ->from('table_one')
             ->orderBy()
-            ->__toString();
+            ->getQuery();
     }
 
     /**
@@ -257,7 +257,7 @@ final class BuilderSelectTest extends TestCase
             ->orderBy(
                 [],
             )
-            ->__toString();
+            ->getQuery();
     }
 
     /**
@@ -278,7 +278,7 @@ final class BuilderSelectTest extends TestCase
         )
             ->from('table_one', 'to')
             ->pagination(10)
-            ->__toString();
+            ->getQuery();
         $expect = ' SELECT column_one AS co, column_two AS ct ' .
             ' FROM table_one AS to ' .
             ' LIMIT 10 ';
@@ -307,7 +307,7 @@ final class BuilderSelectTest extends TestCase
         )
             ->from('table_one', 'to')
             ->pagination(10, 20)
-            ->__toString();
+            ->getQuery();
         $expect = ' SELECT column_one AS co, column_two AS ct ' .
             ' FROM table_one AS to ' .
             ' LIMIT 10 OFFSET 20';

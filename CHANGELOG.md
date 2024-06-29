@@ -2,16 +2,20 @@
 
 All notable changes to `EchoQuery` will be documented in this file.
 
-## Last update 2024-05-18
+## Last update 2024-06-29
 
 ### Added
-- ORDER BY clause.
+
+- Nothing
 
 ### Deprecated
+
 - Nothing
 
 ### Fixed
-- Nothing
+
+- `IS NOT NULL`, `IS NULL` and listing filtering concatenating at the end of the query with multiple filters bug fixed.
 
 ### Removed
+
 - Nothing

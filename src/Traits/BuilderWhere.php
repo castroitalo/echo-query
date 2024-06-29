@@ -149,7 +149,7 @@ trait BuilderWhere
      */
     private function baseComparisonOperator(string $query, string $comparisonOperator, mixed $value): string
     {
-        // Existance conditions
+        // Existence conditions
         if (! str_contains($query, 'WHERE') || is_null($this->where)) {
             throw new BuilderException(
                 'Comparison Operator ' . $comparisonOperator . ' must have a previsou WHERE statemen.',
@@ -219,7 +219,7 @@ trait BuilderWhere
      */
     private function baseLogicalOperator(string $query, string $logicalOperator, string $columnName): string
     {
-        // Existance conditions
+        // Existence conditions
         if (! str_contains($query, 'WHERE') || is_null($this->where)) {
             throw new BuilderException(
                 'Logical Operator ' . $logicalOperator . ' must have a previsou WHERE statemen.',
@@ -258,7 +258,7 @@ trait BuilderWhere
      */
     private function basePatternMatching(string $query, string $patternMatchingOperator, string $pattern): string
     {
-        // Existance conditions
+        // Existence conditions
         if (! str_contains($query, 'WHERE') || is_null($this->where)) {
             throw new BuilderException(
                 'Pattern matching ' . $patternMatchingOperator . ' must have a previous WHERE statement.',
@@ -298,7 +298,7 @@ trait BuilderWhere
      */
     private function baseRangeCondition(string $query, string $rangeCondition, mixed $start, mixed $end): string
     {
-        // Existance conditions
+        // Existence conditions
         if (! str_contains($query, 'WHERE') || is_null($this->where)) {
             throw new BuilderException(
                 'Range condition ' . $rangeCondition . ' must have a previous WHERE statement',
@@ -330,7 +330,7 @@ trait BuilderWhere
      */
     private function baseListcondition(string $query, string $listCondition, array $list): string
     {
-        // Existance conditions
+        // Existence conditions
         if (! str_contains($query, 'WHERE') || is_null($this->where)) {
             throw new BuilderException(
                 'List condition ' . $listCondition . ' must have a previous WHERE statement',
@@ -352,7 +352,9 @@ trait BuilderWhere
             $listCounter += 1;
         }
 
-        $query .= ' ' . $listCondition . ' ' . $listValue;
+        $oldWhere = $this->where;
+        $newWhere = $this->where .= ' ' . $listCondition . ' ' . $listValue . ' ';
+        $query = str_replace($oldWhere, $newWhere, $query);
 
         return $query;
     }
@@ -370,7 +372,7 @@ trait BuilderWhere
      */
     public function baseNullConditions(string $query, string $nullCondition): string
     {
-        // Existance conditions
+        // Existence conditions
         if (! str_contains($query, 'WHERE') || is_null($this->where)) {
             throw new BuilderException(
                 'Null condition ' . $nullCondition . ' must have a previous WHERE statement',
@@ -378,7 +380,9 @@ trait BuilderWhere
             );
         }
 
-        $query .= ' ' . $nullCondition . ' ';
+        $oldWhere = $this->where;
+        $newWhere = $this->where .= ' ' . $nullCondition . ' ';
+        $query = str_replace($oldWhere, $newWhere, $query);
 
         return $query;
     }

@@ -105,7 +105,7 @@ trait BuilderJoin
      */
     private function baseUnion(string $query, string $unionQuery, bool $unionAll = false): string
     {
-        // Validate existance conditons
+        // Validate Existence conditons
         if (empty($unionQuery)) {
             throw new BuilderException(
                 'Invalid UNION query.',

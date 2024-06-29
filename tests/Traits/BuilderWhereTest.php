@@ -68,7 +68,7 @@ final class BuilderWhereTest extends TestCase
         )
             ->from('table_one', 'to')
             ->where('column_one')
-            ->__toString();
+            ->getQuery();
         $expect = 'SELECT column_one AS co, column_two AS ct ' .
             'FROM table_one AS to ' .
             'WHERE column_one';
@@ -116,7 +116,7 @@ final class BuilderWhereTest extends TestCase
         )
             ->from('table_one', 'to')
             ->where('')
-            ->__toString();
+            ->getQuery();
     }
 
     /**
@@ -181,7 +181,7 @@ final class BuilderWhereTest extends TestCase
             ->from('table_one', 'to')
             ->where('column_one')
             ->$comparisonOperatorMethod(5)
-            ->__toString();
+            ->getQuery();
         $expect = ' SELECT column_one AS co, column_two AS ct ' .
             ' FROM table_one AS to WHERE column_one ' . $comparisonOperatorSymbol . ' 5 ';
 
@@ -217,7 +217,7 @@ final class BuilderWhereTest extends TestCase
             ->from('table_one', 'to')
             ->where('column_one')
             ->notEqualsTo(5, '<>')
-            ->__toString();
+            ->getQuery();
         $expect = ' SELECT column_one AS co, column_two AS ct ' .
             ' FROM table_one AS to WHERE column_one <> 5 ';
 
@@ -300,7 +300,7 @@ final class BuilderWhereTest extends TestCase
             ->equalsTo(2)
             ->$logicalOperatorMethod('column_two')
             ->notEqualsTo('\'something\'')
-            ->__toString();
+            ->getQuery();
         $expect = 'SELECT column_one AS co, column_two AS ct' .
             'FROM table_one AS to' .
             'WHERE column_one = 2' .
@@ -356,7 +356,7 @@ final class BuilderWhereTest extends TestCase
             ->equalsTo(2)
             ->and('')
             ->notEqualsTo('something')
-            ->__toString();
+            ->getQuery();
     }
 
     /**
@@ -379,7 +379,7 @@ final class BuilderWhereTest extends TestCase
             ->from('table_one', 'to')
             ->where('column_one')
             ->like('%something')
-            ->__toString();
+            ->getQuery();
         $expect = 'SELECT column_one AS co, column_two AS ct' .
             'FROM table_one AS to' .
             'WHERE column_one LIKE \'%something\'';
@@ -410,7 +410,7 @@ final class BuilderWhereTest extends TestCase
             ->from('table_one', 'to')
             ->where('column_one')
             ->notLike('%something')
-            ->__toString();
+            ->getQuery();
         $expect = 'SELECT column_one AS co, column_two AS ct' .
             'FROM table_one AS to' .
             'WHERE column_one NOT LIKE \'%something\'';
@@ -485,7 +485,7 @@ final class BuilderWhereTest extends TestCase
             ->from('table_one', 'to')
             ->where('column_one')
             ->between(1, 10)
-            ->__toString();
+            ->getQuery();
         $expect = ' SELECT column_one AS co, column_two AS ct ' .
             ' FROM table_one AS to ' .
             ' WHERE column_one BETWEEN 1 AND 10 ';
@@ -516,7 +516,7 @@ final class BuilderWhereTest extends TestCase
             ->from('table_one', 'to')
             ->where('column_one')
             ->notBetween(1, 10)
-            ->__toString();
+            ->getQuery();
         $expect = ' SELECT column_one AS co, column_two AS ct ' .
             ' FROM table_one AS to ' .
             ' WHERE column_one NOT BETWEEN 1 AND 10 ';
@@ -565,7 +565,7 @@ final class BuilderWhereTest extends TestCase
             ->from('table_one', 'to')
             ->where('column_one')
             ->in(['\'value_one\'', 2, '\'value_three\''])
-            ->__toString();
+            ->getQuery();
         $expect = ' SELECT column_one AS co, column_two AS ct ' .
             ' FROM table_one AS to ' .
             ' WHERE column_one IN (\'value_one\', 2, \'value_three\') ';
@@ -595,7 +595,7 @@ final class BuilderWhereTest extends TestCase
             ->from('table_one', 'to')
             ->where('column_one')
             ->notIn(['\'value_one\'', 2, '\'value_three\''])
-            ->__toString();
+            ->getQuery();
         $expect = ' SELECT column_one AS co, column_two AS ct ' .
             ' FROM table_one AS to ' .
             ' WHERE column_one NOT IN (\'value_one\', 2, \'value_three\') ';
@@ -643,7 +643,7 @@ final class BuilderWhereTest extends TestCase
             ->from('table_one', 'to')
             ->where('column_one')
             ->isNull()
-            ->__toString();
+            ->getQuery();
         $expect = ' SELECT column_one AS co, column_two AS ct ' .
             ' FROM table_one AS to ' .
             ' WHERE column_one IS NULL ';
@@ -673,7 +673,7 @@ final class BuilderWhereTest extends TestCase
             ->from('table_one', 'to')
             ->where('column_one')
             ->isNotNull()
-            ->__toString();
+            ->getQuery();
         $expect = ' SELECT column_one AS co, column_two AS ct ' .
             ' FROM table_one AS to ' .
             ' WHERE column_one IS NOT NULL ';
@@ -724,7 +724,7 @@ final class BuilderWhereTest extends TestCase
             ->equalsTo(10)
             ->having('COUNT(column_one)')
             ->greaterThan(5)
-            ->__toString();
+            ->getQuery();
         $expect = ' SELECT COUNT(column_one) AS co, ' .
             ' column_two AS ct ' .
             ' FROM table_one ' .
@@ -762,6 +762,6 @@ final class BuilderWhereTest extends TestCase
             ->equalsTo(10)
             ->having('')
             ->greaterThan(5)
-            ->__toString();
+            ->getQuery();
     }
 }

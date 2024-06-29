@@ -63,7 +63,7 @@ final class BuilderFromTest extends TestCase
             ['column_two', 'ct'],
         )
             ->from('table_one')
-            ->__toString();
+            ->getQuery();
         $expect = 'SELECT column_one AS co, column_two AS ct FROM table_one';
 
         $this->assertEquals(
@@ -90,7 +90,7 @@ final class BuilderFromTest extends TestCase
             ['column_two', 'ct'],
         )
             ->from('table_one', 'to')
-            ->__toString();
+            ->getQuery();
         $expect = 'SELECT column_one AS co, column_two AS ct FROM table_one AS to';
 
         $this->assertEquals(
@@ -120,13 +120,13 @@ final class BuilderFromTest extends TestCase
             ['column_two'],
         )
             ->from('table_one', 'to')
-            ->__toString();
+            ->getQuery();
         $actual = $this->builder->select(
             ['a.column_one', 'co'],
             ['a.column_two', 'ct'],
         )
             ->from($sub_query, 'a', true)
-            ->__toString();
+            ->getQuery();
         $expect = 'SELECT a.column_one AS co, a.column_two AS ct FROM ( '
             . 'SELECT column_one, column_two FROM table_one AS to'
             . ') AS a';

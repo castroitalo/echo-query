@@ -110,7 +110,7 @@ trait BuilderSelect
      */
     private function baseGroupBy(string $query, array $columns): string
     {
-        // Existance validation
+        // Existence validation
         if (empty($columns)) {
             throw new BuilderException(
                 'Invalid GROUP BY columns.',

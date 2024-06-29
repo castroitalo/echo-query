@@ -65,7 +65,7 @@ trait BuilderFrom
      */
     private function baseFromStatementValidation(string $query, string $tableName): void
     {
-        // Validate FROM existance conditions
+        // Validate FROM Existence conditions
         if (! str_contains($query, 'SELECT')) {
             throw new BuilderException(
                 'No previous SELECT statement for FROM statement.',

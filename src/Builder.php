@@ -677,15 +677,28 @@ final class Builder
     }
 
     /**
-     * Converts the built query to a string.
+     * Get the generated query.
      *
      * This method allows the Builder instance to be used directly in contexts expecting a string,
      * returning the SQL query string that has been constructed.
      *
-     * @return string The constructed SQL query.
+     * @return string
+     */
+    public function getQuery(): string
+    {
+        return $this->query;
+    }
+
+    /**
+     * Get the generated query.
+     *
+     * This method allows the Builder instance to be used directly in contexts expecting a string,
+     * returning the SQL query string that has been constructed.
+     *
+     * @return string
      */
     public function __toString(): string
     {
-        return $this->query;
+        return $this->getQuery();
     }
 }

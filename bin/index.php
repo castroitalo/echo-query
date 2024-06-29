@@ -15,14 +15,19 @@ function main(): void
     $query = (new Builder())->select(
         ['column_one', 'co'],
         ['column_two', 'ct'],
-        ['columnt_three', 'ctr']
+        ['column_three', 'ctr'],
+        ['column_four', 'cfr']
     )
         ->from('table_one', 'to')
-        ->orderBy(
-            ['column_one'],
-            ['column_two', 'desc']
-        )
-        ->__toString();
+        ->where('column_one')
+        ->isNotNull()
+        ->and('column_two')
+        ->isNotNull()
+        ->and('column_three')
+        ->isNull()
+        ->and('column_four')
+        ->equalsTo(49)
+        ->getQuery();
 
     echo $query . PHP_EOL;
 }
