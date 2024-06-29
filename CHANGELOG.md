@@ -6,7 +6,7 @@ All notable changes to `EchoQuery` will be documented in this file.
 
 ### Added
 
-- Nothing
+- `->getQuery()` method to get the builded query.
 
 ### Deprecated
 
