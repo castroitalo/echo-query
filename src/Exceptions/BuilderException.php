@@ -47,7 +47,7 @@ final class BuilderException extends Exception
     /**
      * Provides a string representation of the exception.
      *
-     * Overrides the default getQuery method to provide a custom string representation of
+     * Overrides the default __toString method to provide a custom string representation of
      * the exception. This representation includes the class name, error code, and error message,
      * making it suitable for logging or displaying in a debugging context. The format is
      * designed to be human-readable and informative, facilitating quicker troubleshooting.
@@ -56,7 +56,7 @@ final class BuilderException extends Exception
      *                exception. This string format aids in distinguishing this exception from
      *                others in logs or error outputs.
      */
-    public function getQuery(): string
+    public function __toString(): string
     {
         return __CLASS__ . '[' . $this->code . ']: ' . $this->message;
     }
